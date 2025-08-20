@@ -22,6 +22,6 @@ class LdJsonTransformer implements Transformer
         string $urlContent,
         TransformationResult $transformationResult
     ): string {
-        return 'Summarize the following webpage to ld+json. ' . $urlContent;
+        return 'Summarize the following webpage to ld+json. '.$urlContent;
     }
 }

@@ -11,16 +11,13 @@ class ProcessRegistrationAction
     {
         $transformers = $registration->getTransformers();
 
-        foreach($registration->getUrls() as $url) {
+        foreach ($registration->getUrls() as $url) {
             $this->processUrl($url, $registration, $transformers);
         }
     }
 
     /**
-     * @param string $url
-     * @param \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration
-     * @param array<int, \Spatie\LaravelUrlAiTransformer\Transformers\Transformer> $transformers
-     *
+     * @param  array<int, \Spatie\LaravelUrlAiTransformer\Transformers\Transformer>  $transformers
      * @return void
      */
     protected function processUrl(
@@ -30,7 +27,7 @@ class ProcessRegistrationAction
     ) {
         $transformationResult = $this->getTransformationResult($url, $registration);
 
-        foreach($transformers as $transformer) {
+        foreach ($transformers as $transformer) {
             $transformer->transform($url, $urlContent, $transformationResult);
         }
     }

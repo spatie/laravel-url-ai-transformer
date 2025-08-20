@@ -4,7 +4,6 @@ namespace Spatie\LaravelUrlAiTransformer;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelUrlAiTransformer\Commands\LaravelUrlAiTransformerCommand;
 use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 

@@ -27,19 +27,19 @@ class Config
 
         return app($actionClass);
     }
-    
+
     public static function model(): string
     {
         $modelClass = config('url-ai-transformer.model');
-        
+
         if (! $modelClass) {
             throw new InvalidArgumentException('Model class not configured');
         }
-        
+
         if (! class_exists($modelClass)) {
             throw new InvalidArgumentException("Model class '{$modelClass}' does not exist");
         }
-        
+
         return $modelClass;
     }
 }

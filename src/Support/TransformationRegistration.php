@@ -12,8 +12,7 @@ class TransformationRegistration
 
     public function __construct(
         protected array $urls,
-    ) {
-    }
+    ) {}
 
     public function usingTransformers(Transformer ...$transformers): self
     {

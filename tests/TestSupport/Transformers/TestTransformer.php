@@ -7,7 +7,7 @@ use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TestTransformer implements Transformer
 {
-    public function transform(string $url, string $urlContent, TransformationResult $transformationResult,)
+    public function transform(string $url, string $urlContent, TransformationResult $transformationResult)
     {
         // TODO: Implement transform() method.
     }
