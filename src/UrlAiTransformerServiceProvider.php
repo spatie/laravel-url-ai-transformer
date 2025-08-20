@@ -5,21 +5,24 @@ namespace Spatie\LaravelUrlAiTransformer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Spatie\LaravelUrlAiTransformer\Commands\LaravelUrlAiTransformerCommand;
+use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
+use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 
-class LaravelUrlAiTransformerServiceProvider extends PackageServiceProvider
+class UrlAiTransformerServiceProvider extends PackageServiceProvider
 {
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->scoped(RegisteredTransformations::class);
+    }
+
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('laravel-url-ai-transformer')
             ->hasConfigFile()
-            ->hasViews()
             ->hasMigration('create_laravel_url_ai_transformer_table')
-            ->hasCommand(LaravelUrlAiTransformerCommand::class);
+            ->hasCommand(TransformUrlsCommand::class);
     }
 }

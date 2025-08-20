@@ -8,12 +8,14 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('laravel_url_ai_transformer_table', function (Blueprint $table) {
+        Schema::create('transformation_results', function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
+            $table->longText('url');
+            $table->string('type');
+            $table->json('result');
             $table->timestamps();
+            
+            $table->index('url');
         });
     }
 };
