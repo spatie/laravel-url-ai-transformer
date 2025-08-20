@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Spatie\LaravelUrlAiTransformer\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelUrlAiTransformerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-url-ai-transformer';
 
     public $description = 'My command';
 
