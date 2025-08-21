@@ -50,4 +50,3 @@ class TransformationResult extends Model
         return $this->result[$key] ?? null;
     }
 }
-
