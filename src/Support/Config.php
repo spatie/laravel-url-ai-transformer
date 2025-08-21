@@ -42,4 +42,30 @@ class Config
         
         return $modelClass;
     }
+    
+    public static function aiProvider(string $configName = 'default'): \Prism\Prism\Enums\Provider
+    {
+        $provider = config("url-ai-transformer.ai.{$configName}.provider");
+        
+        if (! $provider) {
+            throw new InvalidArgumentException("AI provider not configured for '{$configName}'");
+        }
+        
+        if (! $provider instanceof \Prism\Prism\Enums\Provider) {
+            throw new InvalidArgumentException("Invalid AI provider configured for '{$configName}'");
+        }
+        
+        return $provider;
+    }
+    
+    public static function aiModel(string $configName = 'default'): string
+    {
+        $model = config("url-ai-transformer.ai.{$configName}.model");
+        
+        if (! $model) {
+            throw new InvalidArgumentException("AI model not configured for '{$configName}'");
+        }
+        
+        return $model;
+    }
 }

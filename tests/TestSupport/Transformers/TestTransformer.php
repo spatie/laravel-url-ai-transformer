@@ -2,18 +2,17 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers;
 
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
-class TestTransformer implements Transformer
+class TestTransformer extends Transformer
 {
-    public function transform(string $url, string $urlContent, TransformationResult $transformationResult,)
+    public function transform(): void
     {
-        // TODO: Implement transform() method.
+        $this->transformationResult->setResult('test', 'test-value');
     }
 
-    public function getPrompt(string $url, string $urlContent, TransformationResult $transformationResult): string
+    public function getPrompt(): string
     {
-        // TODO: Implement getPrompt() method.
+        return 'Test prompt for ' . $this->url;
     }
 }

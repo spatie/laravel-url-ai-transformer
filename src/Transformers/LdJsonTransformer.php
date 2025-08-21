@@ -2,26 +2,21 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Transformers;
 
-use Prism\Prism\Enums\Provider;
 use Prism\Prism\Prism;
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Support\Config;
 
-class LdJsonTransformer implements Transformer
+class LdJsonTransformer extends Transformer
 {
-    public function transform(
-        string $url,
-        string $urlContent,
-        TransformationResult $transformationResult,
-    ) {
-        Prism::text()
-            ->using(Provider::Anthropic, 'claude-3-5-sonnet-20240620');
+    public function transform(): void {
+        $response = Prism::text()
+            ->using(Config::aiProvider(), Config::aiModel())
+            ->withPrompt($this->getPrompt())
+            ->asText();
+
+        $this->transformationResult->setResult('ld', $response->text);
     }
 
-    public function getPrompt(
-        string $url,
-        string $urlContent,
-        TransformationResult $transformationResult
-    ): string {
-        return 'Summarize the following webpage to ld+json. ' . $urlContent;
+    public function getPrompt(): string {
+        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. This is the content:' . $this->urlContent;
     }
 }

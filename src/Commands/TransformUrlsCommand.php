@@ -14,7 +14,8 @@ class TransformUrlsCommand extends Command
 
     public function handle()
     {
-        collect(RegisteredTransformations::all())
+        app(RegisteredTransformations::class)
+            ->all()
             ->each(function (TransformationRegistration $registration) {
                 $this->processRegistration($registration);
             });

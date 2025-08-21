@@ -2,8 +2,12 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Actions;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
+use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class ProcessRegistrationAction
 {
@@ -11,34 +15,36 @@ class ProcessRegistrationAction
     {
         $transformers = $registration->getTransformers();
 
-        foreach($registration->getUrls() as $url) {
+        foreach ($registration->getUrls() as $url) {
             $this->processUrl($url, $registration, $transformers);
         }
     }
 
-    /**
-     * @param string $url
-     * @param \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration
-     * @param array<int, \Spatie\LaravelUrlAiTransformer\Transformers\Transformer> $transformers
-     *
-     * @return void
-     */
     protected function processUrl(
         string $url,
         TransformationRegistration $registration,
-        array $transformers
-    ) {
+        Collection $transformers
+    )
+    {
         $transformationResult = $this->getTransformationResult($url, $registration);
 
-        foreach($transformers as $transformer) {
-            $transformer->transform($url, $urlContent, $transformationResult);
-        }
+        $urlContent = Http::get($url)->throw();
+
+        $transformers
+            ->each(fn(Transformer $transformer) => $transformer->setTransformationProperties($url, $urlContent, $transformationResult)
+            )
+            ->each(fn(Transformer $transformer) => $transformer->transform());
+
+        $transformationResult->save();
     }
 
-    protected function getTransformationResult(string $url, TransformationRegistration $registration): TransformationResult
+    protected function getTransformationResult(
+        string $url,
+        TransformationRegistration $registration
+    ): TransformationResult
     {
         /** @var TransformationResult $model */
-        $model = config('laravel-url-ai-transformer.model');
+        $model = Config::model();
 
         return $model::findOrCreateForRegistration($url, $registration);
     }

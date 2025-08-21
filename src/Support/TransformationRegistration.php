@@ -4,6 +4,7 @@ namespace Spatie\LaravelUrlAiTransformer\Support;
 
 use Closure;
 use Generator;
+use Illuminate\Support\Collection;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationRegistration
@@ -12,7 +13,8 @@ class TransformationRegistration
 
     public function __construct(
         protected array $urls,
-    ) {
+    )
+    {
     }
 
     public function usingTransformers(Transformer ...$transformers): self
@@ -29,8 +31,16 @@ class TransformationRegistration
         }
     }
 
-    public function getTransformers(): array
+    /**
+     * @return Collection<int, Transformer>
+     */
+    public function getTransformers(): Collection
     {
-        return $this->transformers;
+        return collect($this->transformers);
+    }
+
+    public function getType(): string
+    {
+        return 'default';
     }
 }

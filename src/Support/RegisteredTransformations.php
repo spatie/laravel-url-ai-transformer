@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
+use Illuminate\Support\Collection;
+
 class RegisteredTransformations
 {
     protected array $registrations = [];
@@ -11,9 +13,12 @@ class RegisteredTransformations
         $this->registrations[] = $registration;
     }
 
-    public function all(): array
+    /**
+     * @return Collection<int, TransformationRegistration>
+     */
+    public function all(): Collection
     {
-        return $this->registrations;
+        return collect($this->registrations);
     }
 
     public function clear(): void

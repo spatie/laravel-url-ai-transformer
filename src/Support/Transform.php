@@ -8,7 +8,6 @@ class Transform
 {
     public static function urls(string|array|Closure ...$urls): TransformationRegistration
     {
-        // Flatten the urls array to handle all input types
         $flattenedUrls = collect($urls)->flatten()->toArray();
 
         $registration = new TransformationRegistration($flattenedUrls);
