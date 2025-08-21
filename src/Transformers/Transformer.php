@@ -7,7 +7,9 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 abstract class Transformer
 {
     public string $url;
+
     public string $urlContent;
+
     public TransformationResult $transformationResult;
 
     public function setTransformationProperties(
@@ -18,7 +20,7 @@ abstract class Transformer
         $this->url = $url;
         $this->urlContent = $urlContent;
         $this->transformationResult = $transformationResult;
-        
+
         return $this;
     }
 

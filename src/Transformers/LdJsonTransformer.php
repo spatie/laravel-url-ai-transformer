@@ -7,7 +7,8 @@ use Spatie\LaravelUrlAiTransformer\Support\Config;
 
 class LdJsonTransformer extends Transformer
 {
-    public function transform(): void {
+    public function transform(): void
+    {
         $response = Prism::text()
             ->using(Config::aiProvider(), Config::aiModel())
             ->withPrompt($this->getPrompt())
@@ -16,7 +17,8 @@ class LdJsonTransformer extends Transformer
         $this->transformationResult->setResult('ld', $response->text);
     }
 
-    public function getPrompt(): string {
-        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. This is the content:' . $this->urlContent;
+    public function getPrompt(): string
+    {
+        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. This is the content:'.$this->urlContent;
     }
 }

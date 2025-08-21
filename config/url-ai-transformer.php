@@ -10,7 +10,7 @@ return [
         'image' => [
             'provider' => Prism\Prism\Enums\Provider::OpenAI,
             'model' => 'gpt-4o-mini',
-        ]
+        ],
     ],
 
     'model' => \Spatie\LaravelUrlAiTransformer\Models\TransformationResult::class,

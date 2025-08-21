@@ -13,6 +13,6 @@ class TestTransformer extends Transformer
 
     public function getPrompt(): string
     {
-        return 'Test prompt for ' . $this->url;
+        return 'Test prompt for '.$this->url;
     }
 }

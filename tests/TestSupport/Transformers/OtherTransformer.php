@@ -13,6 +13,6 @@ class OtherTransformer extends Transformer
 
     public function getPrompt(): string
     {
-        return 'Other prompt for ' . $this->url;
+        return 'Other prompt for '.$this->url;
     }
 }

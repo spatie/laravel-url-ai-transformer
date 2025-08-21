@@ -24,7 +24,7 @@ class TransformationResult extends Model
             'result' => [],
         ]);
     }
-    
+
     public static function forUrl(string $url): ?self
     {
         return self::where('url', $url)->first();
@@ -40,13 +40,13 @@ class TransformationResult extends Model
 
         return $this;
     }
-    
-    public function result(string $key = null): mixed
+
+    public function result(?string $key = null): mixed
     {
         if ($key === null) {
             return $this->result;
         }
-        
+
         return $this->result[$key] ?? null;
     }
 }

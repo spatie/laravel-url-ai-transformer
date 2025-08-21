@@ -3,7 +3,6 @@
 namespace Spatie\LaravelUrlAiTransformer\Tests;
 
 use Dotenv\Dotenv;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\LaravelUrlAiTransformer\UrlAiTransformerServiceProvider;
 
@@ -12,7 +11,7 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         // Load test environment variables before parent setup
-        if (file_exists(__DIR__ . '/.env')) {
+        if (file_exists(__DIR__.'/.env')) {
             $dotenv = Dotenv::createImmutable(__DIR__);
             $dotenv->load();
         }

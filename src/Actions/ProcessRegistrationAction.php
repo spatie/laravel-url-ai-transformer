@@ -24,16 +24,15 @@ class ProcessRegistrationAction
         string $url,
         TransformationRegistration $registration,
         Collection $transformers
-    )
-    {
+    ) {
         $transformationResult = $this->getTransformationResult($url, $registration);
 
         $urlContent = Http::get($url)->throw();
 
         $transformers
-            ->each(fn(Transformer $transformer) => $transformer->setTransformationProperties($url, $urlContent, $transformationResult)
+            ->each(fn (Transformer $transformer) => $transformer->setTransformationProperties($url, $urlContent, $transformationResult)
             )
-            ->each(fn(Transformer $transformer) => $transformer->transform());
+            ->each(fn (Transformer $transformer) => $transformer->transform());
 
         $transformationResult->save();
     }
@@ -41,8 +40,7 @@ class ProcessRegistrationAction
     protected function getTransformationResult(
         string $url,
         TransformationRegistration $registration
-    ): TransformationResult
-    {
+    ): TransformationResult {
         /** @var TransformationResult $model */
         $model = Config::model();
 
