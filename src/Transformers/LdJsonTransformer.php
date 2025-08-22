@@ -13,7 +13,7 @@ class LdJsonTransformer extends Transformer
             ->withPrompt($this->getPrompt())
             ->asText();
 
-        $this->transformationResult->setResult('ld', $response->text);
+        $this->transformationResult->result = $response->text;
     }
 
     public function getPrompt(): string {

@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Transformers;
 
+use Illuminate\Support\Str;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
 abstract class Transformer
@@ -18,8 +19,16 @@ abstract class Transformer
         $this->url = $url;
         $this->urlContent = $urlContent;
         $this->transformationResult = $transformationResult;
-        
+
         return $this;
+    }
+
+    public function type(): string
+    {
+        return Str::of(static::class)
+            ->basename()
+            ->ucfirst()
+            ->beforeLast('transformer');
     }
 
     abstract public function transform(): void;

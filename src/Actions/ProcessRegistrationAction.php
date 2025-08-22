@@ -26,26 +26,32 @@ class ProcessRegistrationAction
         Collection $transformers
     )
     {
-        $transformationResult = $this->getTransformationResult($url, $registration);
-
         $urlContent = Http::get($url)->throw();
 
-        $transformers
-            ->each(fn(Transformer $transformer) => $transformer->setTransformationProperties($url, $urlContent, $transformationResult)
-            )
-            ->each(fn(Transformer $transformer) => $transformer->transform());
+        foreach($transformers as $transformer) {
+            $this->processTransformer($transformer, $url, $urlContent);
+        }
+    }
+
+    public function processTransformer(Transformer $transformer, string $url, string $urlContent): void
+    {
+        $transformationResult = $this->getTransformationResult($url, $transformer);
+
+        $transformer->setTransformationProperties($url, $urlContent, $transformationResult);
+
+        $transformer->transform();
 
         $transformationResult->save();
     }
 
     protected function getTransformationResult(
         string $url,
-        TransformationRegistration $registration
+        Transformer $transformer
     ): TransformationResult
     {
         /** @var TransformationResult $model */
         $model = Config::model();
 
-        return $model::findOrCreateForRegistration($url, $registration);
+        return $model::findOrCreateForRegistration($url, $transformer);
     }
 }

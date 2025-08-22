@@ -38,9 +38,4 @@ class TransformationRegistration
     {
         return collect($this->transformers);
     }
-
-    public function getType(): string
-    {
-        return 'default';
-    }
 }
