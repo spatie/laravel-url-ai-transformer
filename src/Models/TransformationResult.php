@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
+use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationResult extends Model
@@ -45,19 +46,26 @@ class TransformationResult extends Model
         ]);
     }
 
-    public function regenerate(string $transformerClass): void
+    public function regenerate(bool $now = false): void
     {
+        $transformerClass = app(RegisteredTransformations::class)->getTransformationClassForType($this->type);
+
         $fetchAction = Config::getAction('fetch_url_content', FetchUrlContentAction::class);
 
         $urlContent = $fetchAction->execute($this->url);
 
         $jobClass = Config::getProcessTransformationJobClass();
 
-        $jobClass::dispatch($transformerClass, $this->url, $urlContent);
+
+        $method = $now
+            ? 'dispatchSync'
+            : 'dispatch';
+
+        $jobClass::$method($transformerClass, $this->url, $urlContent);
     }
 
-    public function regenerateWithTransformer(Transformer $transformer): void
+    public function regenerateNow(): void
     {
-        $this->regenerate(get_class($transformer));
+        $this->regenerate(true);
     }
 }
