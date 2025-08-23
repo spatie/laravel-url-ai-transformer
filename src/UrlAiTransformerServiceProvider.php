@@ -21,7 +21,7 @@ class UrlAiTransformerServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-url-ai-transformer')
             ->hasConfigFile()
-            ->hasMigration('create_laravel_url_ai_transformer_table')
+            ->hasMigration('create_url_ai_transformer_table')
             ->hasCommand(TransformUrlsCommand::class);
     }
 }
