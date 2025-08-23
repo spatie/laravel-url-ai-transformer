@@ -157,3 +157,59 @@ it('processes all transformations when no filters are provided', function () {
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
     expect(TransformationResult::forUrl('https://spatie.be', 'Test'))->toBe('test');
 });
+
+it('forces transformations to run even when shouldRun returns false', function () {
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(new \Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer);
+
+    // Without force, the skippable transformer should not run
+    $this
+        ->artisan(TransformUrlsCommand::class)
+        ->assertSuccessful();
+
+    expect(TransformationResult::forUrl('https://example.com', 'Skippable'))->toBeNull();
+
+    // With force, the skippable transformer should run
+    $this
+        ->artisan(TransformUrlsCommand::class, ['--force' => true])
+        ->assertSuccessful();
+
+    expect(TransformationResult::forUrl('https://example.com', 'Skippable'))->toBe('should not be set');
+});
+
+it('runs transformations immediately when using --now option', function () {
+    Queue::fake();
+    
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
+
+    // Without --now, jobs should be queued
+    $this
+        ->artisan(TransformUrlsCommand::class)
+        ->assertSuccessful();
+
+    Queue::assertPushed(ProcessTransformerJob::class);
+    
+    // The result should not be immediately available since it's queued
+    expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBeNull();
+
+    // Clear previous queue assertions and results
+    Queue::fake();
+    TransformationResult::where('url', 'https://example.com')->delete();
+
+    // With --now, jobs should run synchronously
+    $this
+        ->artisan(TransformUrlsCommand::class, ['--now' => true])
+        ->assertSuccessful();
+
+    Queue::assertPushed(ProcessTransformerJob::class);
+    
+    // The result should be immediately available since it ran synchronously
+    expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
+});

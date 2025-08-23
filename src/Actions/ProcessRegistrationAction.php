@@ -17,6 +17,7 @@ class ProcessRegistrationAction
         ?string $urlFilter,
         ?string $transformerFilter,
         bool $force,
+        bool $now,
     ): void {
 
         $transformers = $registration->getTransformers();
@@ -29,7 +30,7 @@ class ProcessRegistrationAction
             if ($urlFilter && fnmatch($urlFilter, $url) === false) {
                 continue;
             }
-            $this->processUrl($url, $registration, $transformers, $force);
+            $this->processUrl($url, $registration, $transformers, $force, $now);
         }
     }
 
@@ -38,6 +39,7 @@ class ProcessRegistrationAction
         TransformationRegistration $registration,
         Collection $transformers,
         bool $force,
+        bool $now,
     ): void {
         try {
             $urlContent = $this->fetchUrlContent($url);
@@ -48,7 +50,7 @@ class ProcessRegistrationAction
         }
 
         foreach ($transformers as $transformer) {
-            $this->dispatchTransformerJob($transformer, $url, $urlContent, $force);
+            $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now);
         }
     }
 
@@ -60,11 +62,20 @@ class ProcessRegistrationAction
         return $fetchAction->execute($url);
     }
 
-    protected function dispatchTransformerJob(Transformer $transformer, string $url, string $urlContent, bool $force): void
-    {
+    protected function dispatchTransformerJob(
+        Transformer $transformer,
+        string $url,
+        string $urlContent,
+        bool $force,
+        bool $now,
+    ): void {
         $processTransformationJob = Config::getProcessTransformationJobClass();
 
-        $processTransformationJob::dispatch(get_class($transformer), $url, $urlContent, $force);
+        $dispatchMethod = $now
+            ? 'dispatchSync'
+            : 'dispatch';
+
+        $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
     }
 
     protected function getTransformationResult(
