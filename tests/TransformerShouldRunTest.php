@@ -7,7 +7,7 @@ use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransfo
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer;
 
 it('runs transformers when shouldRun returns true', function () {
-    Transform::urls('https://spatie.be')->usingTransformers(new DummyLdTransformer());
+    Transform::urls('https://spatie.be')->usingTransformers(new DummyLdTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -17,7 +17,7 @@ it('runs transformers when shouldRun returns true', function () {
 });
 
 it('skips transformers when shouldRun returns false', function () {
-    Transform::urls('https://spatie.be')->usingTransformers(new SkippableTransformer());
+    Transform::urls('https://spatie.be')->usingTransformers(new SkippableTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -28,8 +28,8 @@ it('skips transformers when shouldRun returns false', function () {
 
 it('can run multiple transformers with different shouldRun values', function () {
     Transform::urls('https://spatie.be')->usingTransformers(
-        new DummyLdTransformer(),
-        new SkippableTransformer()
+        new DummyLdTransformer,
+        new SkippableTransformer
     );
 
     $this

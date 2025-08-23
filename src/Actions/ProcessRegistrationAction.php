@@ -28,12 +28,12 @@ class ProcessRegistrationAction
         string $url,
         TransformationRegistration $registration,
         Collection $transformers
-    ): void
-    {
+    ): void {
         try {
             $urlContent = $this->fetchUrlContent($url);
         } catch (Exception $exception) {
             $this->recordExceptionForAllTransformers($url, $transformers, $exception);
+
             return;
         }
 
@@ -60,7 +60,7 @@ class ProcessRegistrationAction
 
         $transformer->setTransformationProperties($url, $urlContent, $transformationResult);
 
-        if (!$transformer->shouldRun()) {
+        if (! $transformer->shouldRun()) {
             return;
         }
 
@@ -76,8 +76,7 @@ class ProcessRegistrationAction
     protected function getTransformationResult(
         string $url,
         Transformer $transformer,
-    ): TransformationResult
-    {
+    ): TransformationResult {
         $model = Config::model();
 
         return $model::findOrCreateForRegistration($url, $transformer);
@@ -87,8 +86,7 @@ class ProcessRegistrationAction
         string $url,
         Collection $transformers,
         Exception $exception,
-    ): void
-    {
+    ): void {
         foreach ($transformers as $transformer) {
             $transformationResult = $this->getTransformationResult($url, $transformer);
             $transformationResult->recordException($exception);
