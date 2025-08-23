@@ -36,4 +36,9 @@ abstract class Transformer
     abstract public function transform(): void;
 
     abstract public function getPrompt(): string;
+
+    public function shouldRun(): bool
+    {
+        return true;
+    }
 }

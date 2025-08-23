@@ -43,6 +43,10 @@ class ProcessRegistrationAction
 
         $transformer->setTransformationProperties($url, $urlContent, $transformationResult);
 
+        if (! $transformer->shouldRun()) {
+            return;
+        }
+
         $transformer->transform();
 
         $transformationResult->save();
