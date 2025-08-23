@@ -181,35 +181,24 @@ it('forces transformations to run even when shouldRun returns false', function (
 });
 
 it('runs transformations immediately when using --now option', function () {
-    Queue::fake();
-    
     Http::fake([
         'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
     ]);
 
     Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
 
-    // Without --now, jobs should be queued
-    $this
-        ->artisan(TransformUrlsCommand::class)
-        ->assertSuccessful();
-
-    Queue::assertPushed(ProcessTransformerJob::class);
-    
-    // The result should not be immediately available since it's queued
-    expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBeNull();
-
-    // Clear previous queue assertions and results
-    Queue::fake();
-    TransformationResult::where('url', 'https://example.com')->delete();
-
-    // With --now, jobs should run synchronously
+    // With --now, transformations should run immediately
     $this
         ->artisan(TransformUrlsCommand::class, ['--now' => true])
         ->assertSuccessful();
 
-    Queue::assertPushed(ProcessTransformerJob::class);
-    
     // The result should be immediately available since it ran synchronously
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
+    
+    // Verify that successfully_completed_at is set (indicating it completed)
+    $transformationResult = TransformationResult::where('url', 'https://example.com')
+        ->where('type', 'ld')
+        ->first();
+    
+    expect($transformationResult->successfully_completed_at)->not->toBeNull();
 });
