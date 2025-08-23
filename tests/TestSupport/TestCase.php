@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelUrlAiTransformer\Tests;
+namespace Spatie\LaravelUrlAiTransformer\Tests\TestSupport;
 
 use Dotenv\Dotenv;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -11,8 +11,8 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         // Load test environment variables before parent setup
-        if (file_exists(__DIR__.'/.env')) {
-            $dotenv = Dotenv::createImmutable(__DIR__);
+        if (file_exists(__DIR__.'/../.env')) {
+            $dotenv = Dotenv::createImmutable(__DIR__.'/..');
             $dotenv->load();
         }
 
@@ -36,7 +36,7 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        $migration = include __DIR__.'/../database/migrations/create_url_ai_transformer_table.php.stub';
+        $migration = include __DIR__.'/../../database/migrations/create_url_ai_transformer_table.php.stub';
         $migration->up();
 
         config()->set('prism.providers.openai.api_key', env('OPENAI_API_KEY'));
