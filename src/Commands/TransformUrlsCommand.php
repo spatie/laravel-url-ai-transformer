@@ -20,7 +20,7 @@ class TransformUrlsCommand extends Command
     {
         $urlFilter = $this->option('url');
         $transformerFilter = $this->option('transformer');
-        $force = (bool)$this->option('force');
+        $force = (bool) $this->option('force');
 
         app(RegisteredTransformations::class)
             ->all()
@@ -34,8 +34,7 @@ class TransformUrlsCommand extends Command
         ?string $urlFilter,
         ?string $transformerFilter,
         bool $force
-    ): void
-    {
+    ): void {
         /**
          * @var ProcessRegistrationAction $processRegistrationAction
          */
