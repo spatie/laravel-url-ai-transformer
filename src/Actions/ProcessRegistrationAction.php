@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Actions;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
@@ -24,11 +25,22 @@ class ProcessRegistrationAction
         string $url,
         TransformationRegistration $registration,
         Collection $transformers
-    ): void {
-        $urlContent = $this->fetchUrlContent($url);
+    ): void
+    {
+        try {
+            $urlContent = $this->fetchUrlContent($url);
+        } catch (Exception $exception) {
+            $this->recordExceptionForAllTransformers($url, $transformers, $exception);
+            return;
+        }
 
         foreach ($transformers as $transformer) {
-            $this->processTransformer($transformer, $url, $urlContent);
+            try {
+                $this->processTransformer($transformer, $url, $urlContent);
+            } catch (Exception $exception) {
+                $transformationResult = $this->getTransformationResult($url, $transformer);
+                $transformationResult->recordException($exception);
+            }
         }
     }
 
@@ -43,7 +55,7 @@ class ProcessRegistrationAction
 
         $transformer->setTransformationProperties($url, $urlContent, $transformationResult);
 
-        if (! $transformer->shouldRun()) {
+        if (!$transformer->shouldRun()) {
             return;
         }
 
@@ -55,9 +67,22 @@ class ProcessRegistrationAction
     protected function getTransformationResult(
         string $url,
         Transformer $transformer
-    ): TransformationResult {
+    ): TransformationResult
+    {
         $model = Config::model();
 
         return $model::findOrCreateForRegistration($url, $transformer);
+    }
+
+    protected function recordExceptionForAllTransformers(
+        string $url,
+        Collection $transformers,
+        Exception $exception
+    ): void
+    {
+        foreach ($transformers as $transformer) {
+            $transformationResult = $this->getTransformationResult($url, $transformer);
+            $transformationResult->recordException($exception);
+        }
     }
 }

@@ -28,9 +28,8 @@ abstract class Transformer
     public function type(): string
     {
         return Str::of(static::class)
-            ->basename()
-            ->ucfirst()
-            ->beforeLast('transformer');
+            ->classBasename()
+            ->beforeLast('Transformer');
     }
 
     abstract public function transform(): void;

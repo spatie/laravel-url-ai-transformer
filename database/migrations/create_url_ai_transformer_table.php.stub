@@ -14,6 +14,10 @@ return new class extends Migration
             $table->string('type');
             $table->text('result')->nullable();
 
+            $table->timestamp('latest_exception_seen_at')->nullable();
+            $table->text('latest_exception_message')->nullable();
+            $table->longText('latest_exception_trace')->nullable();
+
             $table->timestamps();
 
             $table->index('url');
