@@ -10,7 +10,7 @@ return [
         'image' => [
             'provider' => Prism\Prism\Enums\Provider::OpenAI,
             'model' => 'dall-e-3',
-        ]
+        ],
     ],
 
     'model' => \Spatie\LaravelUrlAiTransformer\Models\TransformationResult::class,

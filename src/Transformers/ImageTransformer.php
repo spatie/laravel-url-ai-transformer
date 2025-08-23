@@ -24,7 +24,7 @@ class ImageTransformer extends Transformer
     {
         $response = Prism::text()
             ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt('generate a promt of 3000 characters maximum to create an image from this content: ' . $this->urlContent)
+            ->withPrompt('generate a promt of 3000 characters maximum to create an image from this content: '.$this->urlContent)
             ->asText();
 
         return $response->text;
