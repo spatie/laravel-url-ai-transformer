@@ -23,13 +23,12 @@ class TransformUrlsCommand extends Command
 
         $urlFilter = $this->option('url');
         $transformerFilter = $this->option('transformer');
-        $force = (bool)$this->option('force');
-        $now = (bool)$this->option('now');
+        $force = (bool) $this->option('force');
+        $now = (bool) $this->option('now');
 
         app(RegisteredTransformations::class)
             ->all()
-            ->each(fn(TransformationRegistration $registration) =>
-                $this->processRegistration($registration, $urlFilter, $transformerFilter, $force, $now)
+            ->each(fn (TransformationRegistration $registration) => $this->processRegistration($registration, $urlFilter, $transformerFilter, $force, $now)
             );
 
         $this->info('All done!');
@@ -41,8 +40,7 @@ class TransformUrlsCommand extends Command
         ?string $transformerFilter,
         bool $force,
         bool $now,
-    ): void
-    {
+    ): void {
         $processRegistrationAction = Config::getAction('process_registration', ProcessRegistrationAction::class);
 
         $processRegistrationAction->execute($registration, $urlFilter, $transformerFilter, $force, $now);
