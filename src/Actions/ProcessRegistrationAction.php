@@ -27,7 +27,7 @@ class ProcessRegistrationAction
     ): void {
         $urlContent = $this->fetchUrlContent($url);
 
-        foreach($transformers as $transformer) {
+        foreach ($transformers as $transformer) {
             $this->processTransformer($transformer, $url, $urlContent);
         }
     }
@@ -51,8 +51,7 @@ class ProcessRegistrationAction
     protected function getTransformationResult(
         string $url,
         Transformer $transformer
-    ): TransformationResult
-    {
+    ): TransformationResult {
         $model = Config::model();
 
         return $model::findOrCreateForRegistration($url, $transformer);

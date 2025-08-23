@@ -9,9 +9,8 @@ class Config
 {
     /**
      * @template T
-     * @param string $actionKey
-     * @param class-string<T> $mustBeOrExtend
      *
+     * @param  class-string<T>  $mustBeOrExtend
      * @return class-string<T>
      */
     public static function getActionClass(string $actionKey, string $mustBeOrExtend): string
@@ -35,9 +34,8 @@ class Config
 
     /**
      * @template T
-     * @param string $actionKey
-     * @param class-string<T> $mustBeOrExtend
      *
+     * @param  class-string<T>  $mustBeOrExtend
      * @return T
      */
     public static function getAction(string $actionKey, string $mustBeOrExtend): object
