@@ -16,6 +16,5 @@ class TransformerStarted
         public TransformationResult $transformationResult,
         public string $url,
         public string $urlContent,
-    ) {
-    }
+    ) {}
 }

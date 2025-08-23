@@ -14,12 +14,12 @@ use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransforme
 
 it('dispatches TransformerStarted and TransformerEnded events', function () {
     Event::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Test content</body></html>', 200),
     ]);
 
-    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer());
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -42,14 +42,14 @@ it('dispatches TransformerStarted and TransformerEnded events', function () {
 
 it('dispatches events for multiple transformers', function () {
     Event::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Test content</body></html>', 200),
     ]);
 
     Transform::urls('https://example.com')->usingTransformers(
-        new DummyLdTransformer(),
-        new TestTransformer()
+        new DummyLdTransformer,
+        new TestTransformer
     );
 
     $this
@@ -70,12 +70,13 @@ it('dispatches events for multiple transformers', function () {
 
 it('does not dispatch events for transformers that should not run', function () {
     Event::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Test content</body></html>', 200),
     ]);
 
-    $skippableTransformer = new class extends \Spatie\LaravelUrlAiTransformer\Transformers\Transformer {
+    $skippableTransformer = new class extends \Spatie\LaravelUrlAiTransformer\Transformers\Transformer
+    {
         public function transform(): void
         {
             $this->transformationResult->result = 'skipped result';
@@ -104,14 +105,14 @@ it('does not dispatch events for transformers that should not run', function () 
 
 it('dispatches TransformerFailed event when transformer throws exception', function () {
     Event::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Test content</body></html>', 200),
     ]);
 
     Transform::urls('https://example.com')->usingTransformers(
-        new DummyLdTransformer(),
-        new FailingTransformer()
+        new DummyLdTransformer,
+        new FailingTransformer
     );
 
     $this

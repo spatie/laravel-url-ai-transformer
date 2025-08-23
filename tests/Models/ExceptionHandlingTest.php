@@ -14,7 +14,7 @@ it('saves exception details when HTTP request fails', function () {
         'https://example.com' => Http::response('Server Error', 500),
     ]);
 
-    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer());
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -38,8 +38,8 @@ it('saves exception for all transformers when URL fetch fails', function () {
     ]);
 
     Transform::urls('https://example.com')->usingTransformers(
-        new DummyLdTransformer(),
-        new TestTransformer()
+        new DummyLdTransformer,
+        new TestTransformer
     );
 
     $this
@@ -50,10 +50,10 @@ it('saves exception for all transformers when URL fetch fails', function () {
     $allResults = TransformationResult::query()
         ->where('url', 'https://example.com')
         ->get();
-    
+
     // Check for both transformers
     expect($allResults)->toHaveCount(2);
-    
+
     $ldResult = $allResults->firstWhere('type', 'ld');
     $testResult = $allResults->firstWhere('type', 'Test');
 
@@ -71,7 +71,7 @@ it('processes successful URLs normally when no exception occurs', function () {
         'https://example.com' => Http::response('<html><body>Success</body></html>', 200),
     ]);
 
-    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer());
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -94,7 +94,7 @@ it('handles connection timeout exceptions', function () {
         throw new RequestException(new \GuzzleHttp\Psr7\Response(0, [], 'Connection timeout'));
     });
 
-    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer());
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)
@@ -117,8 +117,8 @@ it('only records exception for failing transformer when individual transformer f
     ]);
 
     Transform::urls('https://example.com')->usingTransformers(
-        new DummyLdTransformer(),
-        new FailingTransformer()
+        new DummyLdTransformer,
+        new FailingTransformer
     );
 
     $this

@@ -16,6 +16,5 @@ class TransformerFailed
         public Transformer $transformer,
         public TransformationResult $transformationResult,
         public Exception $exception,
-    ) {
-    }
+    ) {}
 }
