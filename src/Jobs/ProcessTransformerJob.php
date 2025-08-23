@@ -25,7 +25,8 @@ class ProcessTransformerJob implements ShouldQueue
     public function __construct(
         public string $transformerClass,
         public string $url,
-        public string $urlContent
+        public string $urlContent,
+        public bool $force = false,
     ) {}
 
     public function handle(): void
@@ -49,8 +50,10 @@ class ProcessTransformerJob implements ShouldQueue
 
         $transformer->setTransformationProperties($this->url, $this->urlContent, $transformationResult);
 
-        if (! $transformer->shouldRun()) {
-            return;
+        if (! $this->force) {
+            if (! $transformer->shouldRun()) {
+                return;
+            }
         }
 
         event(new TransformerStarted($transformer, $transformationResult, $this->url, $this->urlContent));
