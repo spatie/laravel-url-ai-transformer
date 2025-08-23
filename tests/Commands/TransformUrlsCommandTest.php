@@ -194,11 +194,11 @@ it('runs transformations immediately when using --now option', function () {
 
     // The result should be immediately available since it ran synchronously
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
-    
+
     // Verify that successfully_completed_at is set (indicating it completed)
     $transformationResult = TransformationResult::where('url', 'https://example.com')
         ->where('type', 'ld')
         ->first();
-    
+
     expect($transformationResult->successfully_completed_at)->not->toBeNull();
 });
