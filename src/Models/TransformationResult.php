@@ -3,10 +3,7 @@
 namespace Spatie\LaravelUrlAiTransformer\Models;
 
 use Exception;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Http;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationResult extends Model

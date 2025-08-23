@@ -18,8 +18,7 @@ class ProcessRegistrationAction
         TransformationRegistration $registration,
         ?string $urlFilter,
         ?string $transformerFilter,
-    ): void
-    {
+    ): void {
 
         $transformers = $registration->getTransformers();
 

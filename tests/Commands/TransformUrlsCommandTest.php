@@ -127,7 +127,7 @@ it('can combine URL and transformer filters', function () {
     $this
         ->artisan(TransformUrlsCommand::class, [
             '--url' => 'https://spatie.be/blog/*',
-            '--transformer' => 'ld'
+            '--transformer' => 'ld',
         ])
         ->assertSuccessful();
 
