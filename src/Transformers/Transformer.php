@@ -11,7 +11,7 @@ abstract class Transformer
 
     public string $urlContent;
 
-    public TransformationResult $transformationResult;
+    public ?TransformationResult $transformationResult = null;
 
     public function setTransformationProperties(
         string $url,
