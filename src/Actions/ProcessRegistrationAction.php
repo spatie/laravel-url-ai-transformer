@@ -42,6 +42,7 @@ class ProcessRegistrationAction
         bool $now,
     ): void {
         try {
+
             $urlContent = $this->fetchUrlContent($url);
         } catch (Exception $exception) {
             $this->recordExceptionForAllTransformers($url, $transformers, $exception);

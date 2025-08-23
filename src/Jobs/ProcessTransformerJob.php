@@ -40,6 +40,8 @@ class ProcessTransformerJob implements ShouldQueue
 
             $transformationResult->recordException($exception);
 
+            report($exception);
+
             event(new TransformerFailed($transformer, $transformationResult, $exception));
         }
     }
@@ -63,6 +65,8 @@ class ProcessTransformerJob implements ShouldQueue
         event(new TransformerEnded($transformer, $transformationResult, $this->url, $this->urlContent));
 
         $transformationResult->successfully_completed_at = now();
+
+        $transformationResult->clearException(persist: false);
 
         $transformationResult->save();
     }

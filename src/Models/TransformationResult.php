@@ -21,7 +21,8 @@ class TransformationResult extends Model
     public static function findOrCreateForRegistration(
         string $url,
         Transformer $transformer,
-    ): self {
+    ): self
+    {
         return self::firstOrCreate([
             'url' => $url,
             'type' => $transformer->type(),
@@ -45,6 +46,19 @@ class TransformationResult extends Model
         ]);
     }
 
+    public function clearException(bool $persist): self
+    {
+        $this->latest_exception_seen_at = null;
+        $this->latest_exception_message = null;
+        $this->latest_exception_trace = null;
+
+        if ($persist) {
+            $this->save();
+        }
+
+        return $this;
+    }
+
     public function regenerate(bool $now = false): void
     {
         $transformerClass = app(RegisteredTransformations::class)->getTransformationClassForType($this->type);
@@ -66,4 +80,6 @@ class TransformationResult extends Model
     {
         $this->regenerate(true);
     }
+
+
 }

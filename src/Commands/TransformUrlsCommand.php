@@ -11,10 +11,10 @@ use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
 class TransformUrlsCommand extends Command
 {
     protected $signature = 'transform-urls
-            {--url= : Filter transformations by URL (supports * wildcard)}
-            {--transformer= : Filter transformations by transformer type (supports * wildcard)}
-            {--force= : Force the operation even when transformer shouldRun returns false}
-            {--now= : Dispatch jobs immediately, instead of using a queued job}
+            {--url : Filter transformations by URL (supports * wildcard)}
+            {--transformer : Filter transformations by transformer type (supports * wildcard)}
+            {--force : Force the operation even when transformer shouldRun returns false}
+            {--now : Dispatch jobs immediately, instead of using a queued job}
     ';
 
     public function handle(): void
