@@ -59,6 +59,7 @@ it('can register urls using closures', function () {
 
     expect($registrations)->toHaveCount(1);
 
+    /** @var \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration */
     $registration = $registrations[0];
     $urls = iterator_to_array($registration->getUrls());
 
