@@ -12,6 +12,7 @@ class TransformationResult extends Model
 
     protected $casts = [
         'latest_exception_seen_at' => 'datetime',
+        'successfully_completed_at' => 'datetime',
     ];
 
     public static function findOrCreateForRegistration(

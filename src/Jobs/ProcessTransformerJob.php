@@ -59,6 +59,8 @@ class ProcessTransformerJob implements ShouldQueue
 
         event(new TransformerEnded($transformer, $transformationResult, $this->url, $this->urlContent));
 
+        $transformationResult->successfully_completed_at = now();
+
         $transformationResult->save();
     }
 
