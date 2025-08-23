@@ -179,7 +179,7 @@ it('clears exception data when transformation succeeds after previously failing'
     expect($transformationResult->latest_exception_seen_at)->toBeNull();
     expect($transformationResult->latest_exception_message)->toBeNull();
     expect($transformationResult->latest_exception_trace)->toBeNull();
-    
+
     // Result should be set and successfully_completed_at should be updated
     expect($transformationResult->result)->toBe('dummy result');
     expect($transformationResult->successfully_completed_at)->not->toBeNull();
