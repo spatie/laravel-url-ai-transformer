@@ -83,3 +83,31 @@ it('can register multiple transformations separately', function () {
     expect($urls1)->toBe(['https://example.com/']);
     expect($urls2)->toBe(['https://another.com/']);
 });
+
+it('converts relative URLs to absolute URLs using url helper', function () {
+    Transform::urls('/relative-path', 'another/path', '/')
+        ->usingTransformers(new TestTransformer);
+
+    $registrations = app(RegisteredTransformations::class)->all();
+
+    expect($registrations)->toHaveCount(1);
+
+    $registration = $registrations[0];
+    $urls = iterator_to_array($registration->getUrls());
+
+    expect($urls)->toBe([url('/relative-path'), url('another/path'), url('/')]);
+});
+
+it('keeps HTTP URLs unchanged', function () {
+    Transform::urls('https://example.com/path')
+        ->usingTransformers(new TestTransformer);
+
+    $registrations = app(RegisteredTransformations::class)->all();
+
+    expect($registrations)->toHaveCount(1);
+
+    $registration = $registrations[0];
+    $urls = iterator_to_array($registration->getUrls());
+
+    expect($urls)->toBe(['https://example.com/path']);
+});

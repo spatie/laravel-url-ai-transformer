@@ -149,3 +149,38 @@ it('only records exception for failing transformer when individual transformer f
     expect($failingResult->latest_exception_trace)->not->toBeNull();
     expect($failingResult->result)->toBeNull();
 });
+
+it('clears exception data when transformation succeeds after previously failing', function () {
+    $transformationResult = TransformationResult::create([
+        'url' => 'https://example.com',
+        'type' => 'ld',
+        'latest_exception_seen_at' => now(),
+        'latest_exception_message' => 'Previous error',
+        'latest_exception_trace' => 'Previous trace',
+    ]);
+
+    expect($transformationResult->latest_exception_seen_at)->not->toBeNull();
+    expect($transformationResult->latest_exception_message)->toBe('Previous error');
+    expect($transformationResult->latest_exception_trace)->toBe('Previous trace');
+
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Success</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
+
+    $this
+        ->artisan(TransformUrlsCommand::class)
+        ->assertSuccessful();
+
+    $transformationResult->refresh();
+
+    // Exception data should be cleared after successful transformation
+    expect($transformationResult->latest_exception_seen_at)->toBeNull();
+    expect($transformationResult->latest_exception_message)->toBeNull();
+    expect($transformationResult->latest_exception_trace)->toBeNull();
+    
+    // Result should be set and successfully_completed_at should be updated
+    expect($transformationResult->result)->toBe('dummy result');
+    expect($transformationResult->successfully_completed_at)->not->toBeNull();
+});

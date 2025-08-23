@@ -5,6 +5,7 @@ namespace Spatie\LaravelUrlAiTransformer\Support;
 use Closure;
 use Generator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationRegistration
@@ -25,7 +26,13 @@ class TransformationRegistration
     public function getUrls(): Generator
     {
         foreach ($this->urls as $url) {
-            yield $url instanceof Closure ? ($url)() : $url;
+            $url = $url instanceof Closure ? ($url)() : $url;
+
+            if (! Str::startsWith($url, 'http')) {
+                $url = url($url);
+            }
+
+            yield $url;
         }
     }
 
