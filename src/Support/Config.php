@@ -95,7 +95,7 @@ class Config
      */
     public static function getProcessTransformationJobClass(): string
     {
-        $jobClass = config("url-ai-transformer.process_transformer_job");
+        $jobClass = config('url-ai-transformer.process_transformer_job');
 
         if (! is_a($jobClass, ProcessTransformerJob::class, true)) {
             throw InvalidConfig::jobClassDoesNotExtend($jobClass, ProcessTransformerJob::class);

@@ -28,7 +28,6 @@ return [
 
     'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
 
-
     /*
      * By default, the transformers that ship with this package leverage the wonderful
      * Prism package to interact with various AI services.

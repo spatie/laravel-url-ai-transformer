@@ -3,7 +3,6 @@
 namespace Spatie\LaravelUrlAiTransformer\Actions;
 
 use Exception;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
