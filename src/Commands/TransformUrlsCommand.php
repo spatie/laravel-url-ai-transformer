@@ -10,24 +10,30 @@ use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
 
 class TransformUrlsCommand extends Command
 {
-    protected $signature = 'laravel-url-ai-transformer';
+    protected $signature = 'laravel-url-ai-transformer
+            {--url= : Filter transformations by URL (supports * wildcard)}
+            {--transformer= : Filter transformations by transformer type (supports * wildcard)}
+    ';
 
-    public function handle()
+    public function handle(): void
     {
+        $urlFilter = $this->option('url');
+        $transformerFilter = $this->option('transformer');
+
         app(RegisteredTransformations::class)
             ->all()
-            ->each(function (TransformationRegistration $registration) {
-                $this->processRegistration($registration);
+            ->each(function (TransformationRegistration $registration) use ($urlFilter, $transformerFilter) {
+                $this->processRegistration($registration, $urlFilter, $transformerFilter);
             });
     }
 
-    protected function processRegistration(TransformationRegistration $registration): void
+    protected function processRegistration(TransformationRegistration $registration, ?string $urlFilter, ?string $transformerFilter): void
     {
         /**
          * @var ProcessRegistrationAction $processRegistrationAction
          */
         $processRegistrationAction = Config::getAction('process_registration', ProcessRegistrationAction::class);
 
-        $processRegistrationAction->execute($registration);
+        $processRegistrationAction->execute($registration, $urlFilter, $transformerFilter);
     }
 }

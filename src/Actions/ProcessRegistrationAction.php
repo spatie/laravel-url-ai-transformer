@@ -14,11 +14,23 @@ use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class ProcessRegistrationAction
 {
-    public function execute(TransformationRegistration $registration): void
+    public function execute(
+        TransformationRegistration $registration,
+        ?string $urlFilter,
+        ?string $transformerFilter,
+    ): void
     {
+
         $transformers = $registration->getTransformers();
 
+        if ($transformerFilter) {
+            $transformers = $transformers->filter(fn (Transformer $transformer) => fnmatch($transformerFilter, $transformer->type()));
+        }
+
         foreach ($registration->getUrls() as $url) {
+            if ($urlFilter && fnmatch($urlFilter, $url) === false) {
+                continue;
+            }
             $this->processUrl($url, $registration, $transformers);
         }
     }
