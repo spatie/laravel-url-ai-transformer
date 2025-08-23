@@ -21,8 +21,7 @@ class TransformationResult extends Model
     public static function findOrCreateForRegistration(
         string $url,
         Transformer $transformer,
-    ): self
-    {
+    ): self {
         return self::firstOrCreate([
             'url' => $url,
             'type' => $transformer->type(),
@@ -80,6 +79,4 @@ class TransformationResult extends Model
     {
         $this->regenerate(true);
     }
-
-
 }
