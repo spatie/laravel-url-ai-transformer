@@ -3,7 +3,6 @@
 namespace Spatie\LaravelUrlAiTransformer\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationResult extends Model
