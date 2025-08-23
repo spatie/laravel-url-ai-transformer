@@ -55,7 +55,6 @@ class TransformationResult extends Model
 
         $jobClass = Config::getProcessTransformationJobClass();
 
-
         $method = $now
             ? 'dispatchSync'
             : 'dispatch';
