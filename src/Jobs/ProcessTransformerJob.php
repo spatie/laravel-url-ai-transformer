@@ -26,12 +26,11 @@ class ProcessTransformerJob implements ShouldQueue
         public string $transformerClass,
         public string $url,
         public string $urlContent
-    ) {
-    }
+    ) {}
 
     public function handle(): void
     {
-        $transformer = new $this->transformerClass();
+        $transformer = new $this->transformerClass;
 
         try {
             $this->processTransformer($transformer);

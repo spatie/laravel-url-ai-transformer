@@ -21,7 +21,7 @@ it('can serialize and unserialize the job for production queues', function () {
     $serialized = serialize($job);
     expect($serialized)->toBeString();
 
-    // Test unserialization 
+    // Test unserialization
     $unserialized = unserialize($serialized);
     expect($unserialized)->toBeInstanceOf(ProcessTransformerJob::class);
     expect($unserialized->transformerClass)->toBe(TestTransformer::class);
@@ -30,7 +30,7 @@ it('can serialize and unserialize the job for production queues', function () {
 
     // Test that the unserialized job can still handle correctly
     $unserialized->handle();
-    
+
     // Verify it worked
     expect(\Spatie\LaravelUrlAiTransformer\Models\TransformationResult::count())->toBe(1);
 });
@@ -38,7 +38,7 @@ it('can serialize and unserialize the job for production queues', function () {
 it('can dispatch to database queue without serialization issues', function () {
     // Temporarily switch to database queue for this test
     config(['queue.default' => 'database']);
-    
+
     // Set up database queue table (simplified for test)
     \Illuminate\Support\Facades\Schema::create('jobs', function ($table) {
         $table->bigIncrements('id');
@@ -59,7 +59,7 @@ it('can dispatch to database queue without serialization issues', function () {
     // This should not throw serialization errors
     ProcessTransformerJob::dispatch(
         TestTransformer::class,
-        'https://example.com', 
+        'https://example.com',
         '<html><body>Test content</body></html>'
     );
 
