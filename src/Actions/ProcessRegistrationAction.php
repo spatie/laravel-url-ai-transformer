@@ -5,6 +5,9 @@ namespace Spatie\LaravelUrlAiTransformer\Actions;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelUrlAiTransformer\Events\TransformerEnded;
+use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
+use Spatie\LaravelUrlAiTransformer\Events\TransformerStarted;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
@@ -40,6 +43,8 @@ class ProcessRegistrationAction
             } catch (Exception $exception) {
                 $transformationResult = $this->getTransformationResult($url, $transformer);
                 $transformationResult->recordException($exception);
+
+                event(new TransformerFailed($transformer, $transformationResult, $exception));
             }
         }
     }
@@ -59,14 +64,18 @@ class ProcessRegistrationAction
             return;
         }
 
+        event(new TransformerStarted($transformer, $transformationResult, $url, $urlContent));
+
         $transformer->transform();
+
+        event(new TransformerEnded($transformer, $transformationResult, $url, $urlContent));
 
         $transformationResult->save();
     }
 
     protected function getTransformationResult(
         string $url,
-        Transformer $transformer
+        Transformer $transformer,
     ): TransformationResult
     {
         $model = Config::model();
@@ -77,12 +86,14 @@ class ProcessRegistrationAction
     protected function recordExceptionForAllTransformers(
         string $url,
         Collection $transformers,
-        Exception $exception
+        Exception $exception,
     ): void
     {
         foreach ($transformers as $transformer) {
             $transformationResult = $this->getTransformationResult($url, $transformer);
             $transformationResult->recordException($exception);
+
+            event(new TransformerFailed($transformer, $transformationResult, $exception));
         }
     }
 }
