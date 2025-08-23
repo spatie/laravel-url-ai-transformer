@@ -8,7 +8,7 @@ use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransfo
 
 it('can regenerate a transformation', function () {
     Queue::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Updated content</body></html>', 200),
     ]);
@@ -33,13 +33,13 @@ it('can regenerate a transformation', function () {
 
 it('fetches fresh content when regenerating', function () {
     Queue::fake();
-    
+
     $responses = [
         'https://example.com' => Http::sequence()
             ->push('<html><body>Original content</body></html>', 200)
-            ->push('<html><body>Fresh content</body></html>', 200)
+            ->push('<html><body>Fresh content</body></html>', 200),
     ];
-    
+
     Http::fake($responses);
 
     $transformationResult = TransformationResult::create([
@@ -50,7 +50,7 @@ it('fetches fresh content when regenerating', function () {
 
     // First request would have been during original processing
     Http::get('https://example.com');
-    
+
     // Regenerate should fetch fresh content
     $transformationResult->regenerate('SomeTransformer');
 
@@ -61,7 +61,7 @@ it('fetches fresh content when regenerating', function () {
 
 it('throws exception when URL fetch fails during regeneration', function () {
     Queue::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('Not Found', 404),
     ]);
@@ -73,7 +73,7 @@ it('throws exception when URL fetch fails during regeneration', function () {
     ]);
 
     // This should throw an exception
-    expect(fn() => $transformationResult->regenerate(DummyLdTransformer::class))
+    expect(fn () => $transformationResult->regenerate(DummyLdTransformer::class))
         ->toThrow(\Illuminate\Http\Client\RequestException::class);
 
     // Job should not be dispatched when URL fetch fails
@@ -82,7 +82,7 @@ it('throws exception when URL fetch fails during regeneration', function () {
 
 it('can regenerate with a transformer instance', function () {
     Queue::fake();
-    
+
     Http::fake([
         'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
     ]);
@@ -93,8 +93,8 @@ it('can regenerate with a transformer instance', function () {
         'result' => 'old result',
     ]);
 
-    $transformer = new DummyLdTransformer();
-    
+    $transformer = new DummyLdTransformer;
+
     // Regenerate using transformer instance
     $transformationResult->regenerateWithTransformer($transformer);
 
