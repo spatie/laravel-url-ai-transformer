@@ -43,7 +43,6 @@ class TransformationResult extends Model
             'latest_exception_message' => $exception->getMessage(),
             'latest_exception_trace' => $exception->getTraceAsString(),
         ]);
-
     }
 
     public function regenerate(string $transformerClass): void
