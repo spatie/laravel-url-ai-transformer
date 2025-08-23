@@ -60,6 +60,6 @@ it('throws exception when no transformer is found for type', function () {
         'result' => 'old result',
     ]);
 
-    expect(fn() => $transformationResult->regenerate())
+    expect(fn () => $transformationResult->regenerate())
         ->toThrow(CouldNotFindTransformer::class, 'No transformer found for type: nonexistent');
 });
