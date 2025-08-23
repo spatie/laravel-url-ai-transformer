@@ -26,7 +26,7 @@ class TransformUrlsCommand extends Command
         /**
          * @var ProcessRegistrationAction $processRegistrationAction
          */
-        $processRegistrationAction = Config::getAction('process_registration');
+        $processRegistrationAction = Config::getAction('process_registration', ProcessRegistrationAction::class);
 
         $processRegistrationAction->execute($registration);
     }

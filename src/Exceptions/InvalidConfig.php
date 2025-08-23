@@ -40,4 +40,9 @@ class InvalidConfig extends Exception
     {
         return new static("AI model not configured for '{$configName}'");
     }
+
+    public static function actionClassDoesNotExtend(string $actionClass, string $mustBeOrExtend): static
+    {
+        return new static("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
+    }
 }

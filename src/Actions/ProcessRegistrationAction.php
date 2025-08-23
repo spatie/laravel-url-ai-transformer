@@ -11,7 +11,7 @@ use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class ProcessRegistrationAction
 {
-    public function execute(TransformationRegistration $registration)
+    public function execute(TransformationRegistration $registration): void
     {
         $transformers = $registration->getTransformers();
 
@@ -24,16 +24,20 @@ class ProcessRegistrationAction
         string $url,
         TransformationRegistration $registration,
         Collection $transformers
-    )
-    {
-        $urlContent = Http::get($url)->throw();
+    ): void {
+        $urlContent = $this->fetchUrlContent($url);
 
         foreach($transformers as $transformer) {
             $this->processTransformer($transformer, $url, $urlContent);
         }
     }
 
-    public function processTransformer(Transformer $transformer, string $url, string $urlContent): void
+    protected function fetchUrlContent(string $url): string
+    {
+        return Http::get($url)->throw()->body();
+    }
+
+    protected function processTransformer(Transformer $transformer, string $url, string $urlContent): void
     {
         $transformationResult = $this->getTransformationResult($url, $transformer);
 
@@ -49,7 +53,6 @@ class ProcessRegistrationAction
         Transformer $transformer
     ): TransformationResult
     {
-        /** @var TransformationResult $model */
         $model = Config::model();
 
         return $model::findOrCreateForRegistration($url, $transformer);

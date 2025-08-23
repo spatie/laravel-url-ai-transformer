@@ -13,7 +13,7 @@ return [
         ]
     ],
 
-    'model' => \Spatie\LaravelUrlAiTransformer\Models\TransformationResult::class,
+    'model' => Spatie\LaravelUrlAiTransformer\Models\TransformationResult::class,
 
     'actions' => [
         'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,

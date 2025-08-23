@@ -8,25 +8,31 @@ use Spatie\LaravelUrlAiTransformer\Support\Config;
 it('can get an action class', function () {
     config()->set('url-ai-transformer.actions.test_action', 'stdClass');
     
-    $actionClass = Config::getActionClass('test_action');
+    $actionClass = Config::getActionClass('test_action', 'stdClass');
     
     expect($actionClass)->toBe('stdClass');
 });
 
 it('throws an exception when action key does not exist', function () {
-    Config::getActionClass('non_existent_action');
+    Config::getActionClass('non_existent_action', 'stdClass');
 })->throws(InvalidConfig::class);
 
 it('throws an exception when action class does not exist', function () {
     config()->set('url-ai-transformer.actions.test_action', 'NonExistentClass');
     
-    Config::getActionClass('test_action');
+    Config::getActionClass('test_action', 'stdClass');
+})->throws(InvalidConfig::class);
+
+it('throws an exception when action class does not extend required class', function () {
+    config()->set('url-ai-transformer.actions.test_action', 'stdClass');
+    
+    Config::getActionClass('test_action', 'DateTime');
 })->throws(InvalidConfig::class);
 
 it('can get an action instance', function () {
     config()->set('url-ai-transformer.actions.test_action', 'stdClass');
     
-    $action = Config::getAction('test_action');
+    $action = Config::getAction('test_action', 'stdClass');
     
     expect($action)->toBeInstanceOf(stdClass::class);
 });
