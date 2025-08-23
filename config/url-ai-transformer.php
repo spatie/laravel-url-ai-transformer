@@ -16,6 +16,7 @@ return [
      */
     'actions' => [
         'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,
+        'fetch_url_content' => Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction::class,
     ],
 
     /*
@@ -24,9 +25,9 @@ return [
      * You can extend the default jobs and specify your own jobs here
      * to customize the package's behavior.
      */
-    'jobs' => [
-        'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
-    ],
+
+    'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
+
 
     /*
      * By default, the transformers that ship with this package leverage the wonderful

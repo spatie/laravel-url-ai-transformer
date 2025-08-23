@@ -5,7 +5,7 @@ namespace Spatie\LaravelUrlAiTransformer\Models;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Http;
+use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
@@ -44,5 +44,21 @@ class TransformationResult extends Model
             'latest_exception_trace' => $exception->getTraceAsString(),
         ]);
 
+    }
+
+    public function regenerate(string $transformerClass): void
+    {
+        $fetchAction = Config::getAction('fetch_url_content', FetchUrlContentAction::class);
+
+        $urlContent = $fetchAction->execute($this->url);
+
+        $jobClass = Config::getProcessTransformationJobClass();
+
+        $jobClass::dispatch($transformerClass, $this->url, $urlContent);
+    }
+
+    public function regenerateWithTransformer(Transformer $transformer): void
+    {
+        $this->regenerate(get_class($transformer));
     }
 }

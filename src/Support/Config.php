@@ -4,6 +4,7 @@ namespace Spatie\LaravelUrlAiTransformer\Support;
 
 use Prism\Prism\Enums\Provider;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
+use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 
 class Config
 {
@@ -90,25 +91,14 @@ class Config
     }
 
     /**
-     * @template T
-     *
-     * @param  class-string<T>  $mustBeOrExtend
-     * @return class-string<T>
+     * @return class-string<\Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob>
      */
-    public static function getJobClass(string $jobKey, string $mustBeOrExtend): string
+    public static function getProcessTransformationJobClass(): string
     {
-        $jobClass = config("url-ai-transformer.jobs.{$jobKey}");
+        $jobClass = config("url-ai-transformer.process_transformer_job");
 
-        if (! $jobClass) {
-            throw InvalidConfig::jobKeyNotFound($jobKey);
-        }
-
-        if (! class_exists($jobClass)) {
-            throw InvalidConfig::jobClassDoesNotExist($jobClass);
-        }
-
-        if (! is_a($jobClass, $mustBeOrExtend, true)) {
-            throw InvalidConfig::jobClassDoesNotExtend($jobClass, $mustBeOrExtend);
+        if (! is_a($jobClass, ProcessTransformerJob::class, true)) {
+            throw InvalidConfig::jobClassDoesNotExtend($jobClass, ProcessTransformerJob::class);
         }
 
         return $jobClass;

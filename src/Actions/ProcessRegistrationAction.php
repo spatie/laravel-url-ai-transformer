@@ -5,7 +5,6 @@ namespace Spatie\LaravelUrlAiTransformer\Actions;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
@@ -55,14 +54,17 @@ class ProcessRegistrationAction
 
     protected function fetchUrlContent(string $url): string
     {
-        return Http::get($url)->throw()->body();
+        /** @var FetchUrlContentAction $fetchAction */
+        $fetchAction = Config::getAction('fetch_url_content', FetchUrlContentAction::class);
+
+        return $fetchAction->execute($url);
     }
 
     protected function dispatchTransformerJob(Transformer $transformer, string $url, string $urlContent): void
     {
-        $jobClass = Config::getJobClass('process_transformer_job', ShouldQueue::class);
+        $processTransformationJob = Config::getProcessTransformationJobClass();
 
-        $jobClass::dispatch(get_class($transformer), $url, $urlContent);
+        $processTransformationJob::dispatch(get_class($transformer), $url, $urlContent);
     }
 
     protected function getTransformationResult(
