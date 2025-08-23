@@ -45,4 +45,19 @@ class InvalidConfig extends Exception
     {
         return new static("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
     }
+
+    public static function jobKeyNotFound(string $jobName): static
+    {
+        return new static("There is no job with name `{$jobName}` configured in the `jobs` key of the config file.");
+    }
+
+    public static function jobClassDoesNotExist(string $jobClass): static
+    {
+        return new static("Job class '{$jobClass}' does not exist.");
+    }
+
+    public static function jobClassDoesNotExtend(string $jobClass, string $mustBeOrExtend): static
+    {
+        return new static("Job class '{$jobClass}' must be or extend '{$mustBeOrExtend}'");
+    }
 }

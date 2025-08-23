@@ -36,6 +36,8 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
+        config()->set('queue.default', 'sync');
+
         $migration = include __DIR__.'/../../database/migrations/create_url_ai_transformer_table.php.stub';
         $migration->up();
 

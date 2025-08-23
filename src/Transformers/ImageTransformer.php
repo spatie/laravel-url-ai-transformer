@@ -17,7 +17,7 @@ class ImageTransformer extends Transformer
 
         $image = $response->firstImage();
 
-        dd($image->url);
+        $this->transformationResult->result = $image->url;
     }
 
     public function getPrompt(): string

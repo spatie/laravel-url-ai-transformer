@@ -88,4 +88,29 @@ class Config
 
         return $model;
     }
+
+    /**
+     * @template T
+     *
+     * @param  class-string<T>  $mustBeOrExtend
+     * @return class-string<T>
+     */
+    public static function getJobClass(string $jobKey, string $mustBeOrExtend): string
+    {
+        $jobClass = config("url-ai-transformer.jobs.{$jobKey}");
+
+        if (! $jobClass) {
+            throw InvalidConfig::jobKeyNotFound($jobKey);
+        }
+
+        if (! class_exists($jobClass)) {
+            throw InvalidConfig::jobClassDoesNotExist($jobClass);
+        }
+
+        if (! is_a($jobClass, $mustBeOrExtend, true)) {
+            throw InvalidConfig::jobClassDoesNotExtend($jobClass, $mustBeOrExtend);
+        }
+
+        return $jobClass;
+    }
 }

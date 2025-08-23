@@ -3,11 +3,10 @@
 namespace Spatie\LaravelUrlAiTransformer\Actions;
 
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelUrlAiTransformer\Events\TransformerEnded;
 use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
-use Spatie\LaravelUrlAiTransformer\Events\TransformerStarted;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
@@ -38,14 +37,7 @@ class ProcessRegistrationAction
         }
 
         foreach ($transformers as $transformer) {
-            try {
-                $this->processTransformer($transformer, $url, $urlContent);
-            } catch (Exception $exception) {
-                $transformationResult = $this->getTransformationResult($url, $transformer);
-                $transformationResult->recordException($exception);
-
-                event(new TransformerFailed($transformer, $transformationResult, $exception));
-            }
+            $this->dispatchTransformerJob($transformer, $url, $urlContent);
         }
     }
 
@@ -54,23 +46,11 @@ class ProcessRegistrationAction
         return Http::get($url)->throw()->body();
     }
 
-    protected function processTransformer(Transformer $transformer, string $url, string $urlContent): void
+    protected function dispatchTransformerJob(Transformer $transformer, string $url, string $urlContent): void
     {
-        $transformationResult = $this->getTransformationResult($url, $transformer);
+        $jobClass = Config::getJobClass('process_transformer_job', ShouldQueue::class);
 
-        $transformer->setTransformationProperties($url, $urlContent, $transformationResult);
-
-        if (! $transformer->shouldRun()) {
-            return;
-        }
-
-        event(new TransformerStarted($transformer, $transformationResult, $url, $urlContent));
-
-        $transformer->transform();
-
-        event(new TransformerEnded($transformer, $transformationResult, $url, $urlContent));
-
-        $transformationResult->save();
+        $jobClass::dispatch(get_class($transformer), $url, $urlContent);
     }
 
     protected function getTransformationResult(

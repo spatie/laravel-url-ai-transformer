@@ -10,7 +10,9 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\FailingTransformer;
+use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
+use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 it('dispatches TransformerStarted and TransformerEnded events', function () {
     Event::fake();
@@ -75,25 +77,7 @@ it('does not dispatch events for transformers that should not run', function () 
         'https://example.com' => Http::response('<html><body>Test content</body></html>', 200),
     ]);
 
-    $skippableTransformer = new class extends \Spatie\LaravelUrlAiTransformer\Transformers\Transformer
-    {
-        public function transform(): void
-        {
-            $this->transformationResult->result = 'skipped result';
-        }
-
-        public function getPrompt(): string
-        {
-            return 'skipped prompt';
-        }
-
-        public function shouldRun(): bool
-        {
-            return false;
-        }
-    };
-
-    Transform::urls('https://example.com')->usingTransformers($skippableTransformer);
+    Transform::urls('https://example.com')->usingTransformers(new SkippableTransformer);
 
     $this
         ->artisan(TransformUrlsCommand::class)

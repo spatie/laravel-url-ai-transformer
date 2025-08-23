@@ -19,6 +19,16 @@ return [
     ],
 
     /*
+     * The jobs that will handle background processing.
+     *
+     * You can extend the default jobs and specify your own jobs here
+     * to customize the package's behavior.
+     */
+    'jobs' => [
+        'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
+    ],
+
+    /*
      * By default, the transformers that ship with this package leverage the wonderful
      * Prism package to interact with various AI services.
      *
