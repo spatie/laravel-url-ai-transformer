@@ -1,13 +1,96 @@
 <?php
 
-it('loads environment variables from tests/.env', function () {
-    // Check if the OPENAI_API_KEY from tests/.env is loaded
-    expect(env('OPENAI_API_KEY'))->toBe('test-key');
+use Prism\Prism\Enums\Provider;
+use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Support\Config;
+
+it('can get an action class', function () {
+    config()->set('url-ai-transformer.actions.test_action', 'stdClass');
     
-    // Dump the prism config to see if test-key appears
-    $prismConfig = config('prism');
-    dump($prismConfig);
+    $actionClass = Config::getActionClass('test_action');
     
-    // Check that the test-key is in the prism config
-    expect(config('prism.providers.openai.api_key'))->toBe('test-key');
+    expect($actionClass)->toBe('stdClass');
 });
+
+it('throws an exception when action key does not exist', function () {
+    Config::getActionClass('non_existent_action');
+})->throws(InvalidConfig::class);
+
+it('throws an exception when action class does not exist', function () {
+    config()->set('url-ai-transformer.actions.test_action', 'NonExistentClass');
+    
+    Config::getActionClass('test_action');
+})->throws(InvalidConfig::class);
+
+it('can get an action instance', function () {
+    config()->set('url-ai-transformer.actions.test_action', 'stdClass');
+    
+    $action = Config::getAction('test_action');
+    
+    expect($action)->toBeInstanceOf(stdClass::class);
+});
+
+it('can get the model class', function () {
+    $modelClass = Config::model();
+    
+    expect($modelClass)->toBe(TransformationResult::class);
+});
+
+it('throws an exception when model class is not configured', function () {
+    config()->set('url-ai-transformer.model', null);
+    
+    Config::model();
+})->throws(InvalidConfig::class);
+
+it('throws an exception when model class does not exist', function () {
+    config()->set('url-ai-transformer.model', 'NonExistentModel');
+    
+    Config::model();
+})->throws(InvalidConfig::class);
+
+it('can get the AI provider', function () {
+    $provider = Config::aiProvider();
+    
+    expect($provider)->toBe(Provider::OpenAI);
+});
+
+it('can get the AI provider for a specific config', function () {
+    config()->set('url-ai-transformer.ai.custom.provider', Provider::Anthropic);
+    
+    $provider = Config::aiProvider('custom');
+    
+    expect($provider)->toBe(Provider::Anthropic);
+});
+
+it('throws an exception when AI provider is not configured', function () {
+    config()->set('url-ai-transformer.ai.custom.provider', null);
+    
+    Config::aiProvider('custom');
+})->throws(InvalidConfig::class);
+
+it('throws an exception when AI provider is invalid', function () {
+    config()->set('url-ai-transformer.ai.custom.provider', 'invalid_provider');
+    
+    Config::aiProvider('custom');
+})->throws(InvalidConfig::class);
+
+it('can get the AI model', function () {
+    $model = Config::aiModel();
+    
+    expect($model)->toBe('gpt-4o-mini');
+});
+
+it('can get the AI model for a specific config', function () {
+    config()->set('url-ai-transformer.ai.custom.model', 'custom-model');
+    
+    $model = Config::aiModel('custom');
+    
+    expect($model)->toBe('custom-model');
+});
+
+it('throws an exception when AI model is not configured', function () {
+    config()->set('url-ai-transformer.ai.custom.model', null);
+    
+    Config::aiModel('custom');
+})->throws(InvalidConfig::class);

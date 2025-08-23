@@ -8,7 +8,9 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 abstract class Transformer
 {
     public string $url;
+
     public string $urlContent;
+
     public TransformationResult $transformationResult;
 
     public function setTransformationProperties(

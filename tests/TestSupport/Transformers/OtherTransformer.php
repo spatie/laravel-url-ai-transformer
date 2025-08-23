@@ -8,11 +8,11 @@ class OtherTransformer extends Transformer
 {
     public function transform(): void
     {
-        $this->transformationResult->setResult('other', 'other-value');
+        $this->transformationResult->result = 'other';
     }
 
     public function getPrompt(): string
     {
-        return 'Other prompt for ' . $this->url;
+        return 'Other prompt for '.$this->url;
     }
 }

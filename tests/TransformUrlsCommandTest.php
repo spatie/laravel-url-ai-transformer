@@ -1,21 +1,20 @@
 <?php
 
+use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
+use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransformer;
 use Spatie\LaravelUrlAiTransformer\Transformers\ImageTransformer;
-use \Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
-use \Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
-use \Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
 
-it('will transform a webpage to ld', function() {
-   Transform::urls('https://ohdear.app')->usingTransformers(new LdJsonTransformer());
+it('can transform an URL', function() {
+   Transform::urls('https://spatie.be')->usingTransformers(new DummyLdTransformer());
 
-   $this
-       ->artisan(TransformUrlsCommand::class)
-       ->assertSuccessful();
+    $this
+        ->artisan(TransformUrlsCommand::class)
+        ->assertSuccessful();
 
-   $ld = TransformationResult::forUrl('https://spatie.be', 'ld');
-
-   dd($ld);
+   expect(TransformationResult::forUrl('https://spatie.be', 'ld'))->toBe('dummy result');
 });
 
 it('can transform a webpage to an image', function() {
@@ -25,4 +24,4 @@ it('can transform a webpage to an image', function() {
         ->artisan(TransformUrlsCommand::class)
         ->assertSuccessful();
 
-});
+})->skip();

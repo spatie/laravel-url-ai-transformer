@@ -2,7 +2,8 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
-use InvalidArgumentException;
+use Prism\Prism\Enums\Provider;
+use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 
 class Config
 {
@@ -11,11 +12,11 @@ class Config
         $actionClass = config("url-ai-transformer.actions.{$actionKey}");
 
         if (! $actionClass) {
-            throw new InvalidArgumentException("Action '{$actionKey}' not found in config");
+            throw InvalidConfig::actionKeyNotFound($actionKey);
         }
 
         if (! class_exists($actionClass)) {
-            throw new InvalidArgumentException("Action class '{$actionClass}' does not exist");
+            throw InvalidConfig::actionClassDoesNotExist($actionClass);
         }
 
         return $actionClass;
@@ -33,39 +34,39 @@ class Config
         $modelClass = config('url-ai-transformer.model');
 
         if (! $modelClass) {
-            throw new InvalidArgumentException('Model class not configured');
+            throw InvalidConfig::modelClassNotConfigured();
         }
 
         if (! class_exists($modelClass)) {
-            throw new InvalidArgumentException("Model class '{$modelClass}' does not exist");
+            throw InvalidConfig::modelClassDoesNotExist($modelClass);
         }
 
         return $modelClass;
     }
-    
-    public static function aiProvider(string $configName = 'default'): \Prism\Prism\Enums\Provider
+
+    public static function aiProvider(string $configName = 'default'): Provider
     {
         $provider = config("url-ai-transformer.ai.{$configName}.provider");
-        
+
         if (! $provider) {
-            throw new InvalidArgumentException("AI provider not configured for '{$configName}'");
+            throw InvalidConfig::aiProviderNotConfigured($configName);
         }
-        
-        if (! $provider instanceof \Prism\Prism\Enums\Provider) {
-            throw new InvalidArgumentException("Invalid AI provider configured for '{$configName}'");
+
+        if (! $provider instanceof Provider) {
+            throw InvalidConfig::invalidAiProvider($configName);
         }
-        
+
         return $provider;
     }
-    
+
     public static function aiModel(string $configName = 'default'): string
     {
         $model = config("url-ai-transformer.ai.{$configName}.model");
-        
+
         if (! $model) {
-            throw new InvalidArgumentException("AI model not configured for '{$configName}'");
+            throw InvalidConfig::aiModelNotConfigured($configName);
         }
-        
+
         return $model;
     }
 }

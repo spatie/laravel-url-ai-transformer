@@ -20,7 +20,7 @@ class TransformationResult extends Model
         ]);
     }
 
-    public static function forUrl(string $url, string $type): ?self
+    public static function forUrl(string $url, string $type): ?string
     {
         return self::query()
             ->where('url', $url)

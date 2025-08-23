@@ -4,15 +4,20 @@ namespace Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers;
 
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
-class TestTransformer extends Transformer
+class DummyLdTransformer extends Transformer
 {
     public function transform(): void
     {
-        $this->transformationResult->result = 'test';
+        $this->transformationResult->result = 'dummy result';
     }
 
     public function getPrompt(): string
     {
-        return 'Test prompt for '.$this->url;
+        return 'dummy prompt';
+    }
+
+    public function type(): string
+    {
+        return 'ld';
     }
 }
