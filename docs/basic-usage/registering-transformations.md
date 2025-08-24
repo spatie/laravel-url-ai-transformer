@@ -200,16 +200,17 @@ Transform::urls(
 
 URLs are stored exactly as provided, so be consistent with your format.
 
-## Best practices
+## Chaining multiple transformers
 
-1. **Use service providers**: Keep all registrations in one place
-2. **Group related URLs**: Register URLs with similar transformers together
-3. **Use closures for dynamic content**: Let the database be your source of truth
-4. **Be consistent with URL formats**: Use either full URLs or relative paths consistently
-5. **Document your registrations**: Add comments explaining what each registration does
+You can apply multiple transformers to the same URL:
 
-## What's next?
+```php
+Transform::urls('https://example.com/product')
+    ->usingTransformers(
+        new ProductDataTransformer,
+        new SeoMetaTransformer,
+        new SocialMediaTransformer
+    );
+```
 
-- Learn how to [run transformations](../advanced-usage/using-the-command.md)
-- Start [writing your own transformers](./writing-your-own-transformers)
-- Explore [getting started examples](./getting-started)
+Each transformer runs independently and stores its own result.

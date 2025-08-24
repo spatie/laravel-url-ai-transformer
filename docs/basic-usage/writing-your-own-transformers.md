@@ -82,21 +82,6 @@ class MonthlyReportTransformer extends Transformer
 }
 ```
 
-## Chaining multiple transformers
-
-You can apply multiple transformers to the same URL:
-
-```php
-Transform::urls('https://example.com/product')
-    ->usingTransformers(
-        new ProductDataTransformer,
-        new SeoMetaTransformer,
-        new SocialMediaTransformer
-    );
-```
-
-Each transformer runs independently and stores its own result.
-
 ## Custom transformer types
 
 By default, the transformer type is derived from the class name. You can override this:
@@ -106,11 +91,18 @@ class MyCustomTransformer extends Transformer
 {
     public function type(): string
     {
-        return 'custom_analysis';
+        return 'customType';
     }
 
     // Other methods...
 }
 ```
+
+You can use your custom type when retrieving a transformation result:
+
+```php
+$ldJsonData = TransformationResult::forUrl('https://spatie.be/blog', 'customType');
+
+````
 
 
