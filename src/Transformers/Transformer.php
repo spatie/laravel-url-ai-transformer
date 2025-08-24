@@ -35,7 +35,6 @@ abstract class Transformer
             ->lcfirst();
     }
 
-
     public function getPrompt(): string
     {
         return '';
