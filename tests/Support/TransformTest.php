@@ -68,7 +68,7 @@ it('can register urls using closures that return a single url', function () {
 
 it('can register urls using closures that return an array of urls', function () {
     Transform::urls(
-        fn() => ['https://example.com/', 'https://another.com/']
+        fn () => ['https://example.com/', 'https://another.com/']
     )->usingTransformers(new TestTransformer);
 
     $registrations = app(RegisteredTransformations::class)->all();
