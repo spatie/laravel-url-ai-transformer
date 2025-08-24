@@ -5,7 +5,36 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-url-ai-transformer/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/spatie/laravel-url-ai-transformer/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-url-ai-transformer.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-url-ai-transformer)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, create image, or apply custom AI transformations to web content - this package can do it.
+
+The result of the transformation is stored in a database. You can retrieve the transformed content at any time.
+
+Here's how you can transform a blog post into structured [ld+json data](https://json-ld.org) using AI:
+
+```php
+use Spatie\LaravelUrlAiTransformer\Support\Transform;
+use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
+
+Transform::urls('https://example.com/blog/my-post')
+    ->usingTransformers(new LdJsonTransformer);
+```
+
+A transformer is a class where you can configure the AI transformation, and specify the prompt to use.
+
+The configured transformation can be run using the `transform-urls` command.
+
+```bash
+php artisan transform-urls
+```
+
+After the transformation is complete, you can retrieve the transformed content using the `TransformationResult` model.
+
+```php
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+
+$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post','ldJson'
+);
+```
 
 ## Support us
 
@@ -15,46 +44,9 @@ We invest a lot of resources into creating [best in class open source packages](
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
-## Installation
+## Documentation
 
-You can install the package via composer:
-
-```bash
-composer require spatie/laravel-url-ai-transformer
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-url-ai-transformer-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-url-ai-transformer-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-url-ai-transformer-views"
-```
-
-## Usage
-
-```php
-$laravelUrlAiTransformer = new Spatie\LaravelUrlAiTransformer();
-echo $laravelUrlAiTransformer->echoPhrase('Hello, Spatie!');
-```
+All documentation is available [on our documentation site](https://github.com/spatie/laravel-url-ai-transformer).
 
 ## Testing
 
