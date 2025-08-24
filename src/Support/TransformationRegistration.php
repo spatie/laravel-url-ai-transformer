@@ -5,7 +5,6 @@ namespace Spatie\LaravelUrlAiTransformer\Support;
 use Closure;
 use Generator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformationRegistration
