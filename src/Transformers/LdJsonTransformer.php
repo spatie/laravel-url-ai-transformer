@@ -20,6 +20,6 @@ class LdJsonTransformer extends Transformer
 
     public function getPrompt(): string
     {
-        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. Make the JSON as complete as possible This is the content:'.Str::limit($this->urlContent, 6000);
+        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. Make the snippet as complete as possible. This is the content:'.Str::limit($this->urlContent, 6000);
     }
 }

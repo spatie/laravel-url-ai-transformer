@@ -11,10 +11,10 @@ composer require spatie/laravel-url-ai-transformer
 
 ## Publishing the config file
 
-Optionally, you can publish the `health` config file with this command.
+Optionally, you can publish the config file with this command:
 
 ```bash
-php artisan vendor:publish --tag="health-config"
+php artisan vendor:publish --tag="url-ai-transformer-config"
 ```
 
 This is the content of the published config file:
@@ -79,7 +79,38 @@ php artisan vendor:publish --tag="url-ai-transformer-migrations"
 php artisan migrate
 ```
 
-## Configuring prism
+## Configuring AI providers
 
-TODO: explain that prism is used under the hood for the ai tasks. Add link to prism docs. Give simple example of how to set up environment keys for the prism package (take a look at the current config to know which provider is used).
+This package uses [Prism](https://prismphp.com) under the hood to interact with various AI services. Prism is a powerful, framework-agnostic PHP library that provides a unified interface for working with different AI providers.
+
+By default, the package is configured to use OpenAI's GPT-4 models. To get started, you'll need to add your OpenAI API key to your `.env` file:
+
+```bash
+OPENAI_API_KEY=your-api-key-here
+```
+
+### Using different AI providers
+
+Prism supports multiple AI providers including OpenAI, Anthropic Claude, Google Gemini, and more. You can easily switch providers by updating the config file:
+
+```php
+'ai' => [
+    'default' => [
+        'provider' => Prism\Prism\Enums\Provider::Anthropic,
+        'model' => 'claude-3-5-sonnet-20241022',
+    ],
+],
+```
+
+Don't forget to add the corresponding API key to your `.env` file:
+
+```bash
+# For Anthropic Claude
+ANTHROPIC_API_KEY=your-api-key-here
+
+# For Google Gemini
+GEMINI_API_KEY=your-api-key-here
+```
+
+For more information about configuring Prism and the available providers, check out the [Prism documentation](https://prismphp.com/docs/providers).
 

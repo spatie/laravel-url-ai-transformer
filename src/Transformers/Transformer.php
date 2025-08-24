@@ -13,6 +13,8 @@ abstract class Transformer
 
     public ?TransformationResult $transformationResult = null;
 
+    abstract public function transform(): void;
+
     public function setTransformationProperties(
         string $url,
         string $urlContent,
@@ -33,9 +35,11 @@ abstract class Transformer
             ->lcfirst();
     }
 
-    abstract public function transform(): void;
 
-    abstract public function getPrompt(): string;
+    public function getPrompt(): string
+    {
+        return '';
+    }
 
     public function shouldRun(): bool
     {
