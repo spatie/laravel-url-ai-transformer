@@ -155,7 +155,7 @@ it('processes all transformations when no filters are provided', function () {
 
     // All transformations should be processed
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
-    expect(TransformationResult::forUrl('https://spatie.be', 'Test'))->toBe('test');
+    expect(TransformationResult::forUrl('https://spatie.be', 'test'))->toBe('test');
 });
 
 it('forces transformations to run even when shouldRun returns false', function () {

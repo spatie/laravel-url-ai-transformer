@@ -28,10 +28,6 @@ class TransformationRegistration
         foreach ($this->urls as $url) {
             $url = $url instanceof Closure ? ($url)() : $url;
 
-            if (! Str::startsWith($url, 'http')) {
-                $url = url($url);
-            }
-
             yield $url;
         }
     }

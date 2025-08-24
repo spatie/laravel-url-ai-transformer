@@ -29,7 +29,8 @@ abstract class Transformer
     {
         return Str::of(static::class)
             ->classBasename()
-            ->beforeLast('Transformer');
+            ->beforeLast('Transformer')
+            ->lcfirst();
     }
 
     abstract public function transform(): void;
