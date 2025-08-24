@@ -46,7 +46,7 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 
 ## Documentation
 
-All documentation is available [on our documentation site](https://github.com/spatie/laravel-url-ai-transformer).
+All documentation is available [on our documentation site](https://spatie.be/docs/laravel-url-ai-transformer).
 
 ## Testing
 
