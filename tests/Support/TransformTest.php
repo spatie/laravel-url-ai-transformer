@@ -48,7 +48,7 @@ it('can register urls as an array', function () {
     expect($urls)->toBe(['https://example.com/', 'https://another.com/']);
 });
 
-it('can register urls using closures', function () {
+it('can register urls using closures that return a single url', function () {
     Transform::urls(
         fn () => 'https://example.com/',
         'https://another.com/',
@@ -64,6 +64,22 @@ it('can register urls using closures', function () {
     $urls = iterator_to_array($registration->getUrls());
 
     expect($urls)->toBe(['https://example.com/', 'https://another.com/', 'https://third.com/']);
+});
+
+it('can register urls using closures that return an array of urls', function () {
+    Transform::urls(
+        fn() => ['https://example.com/', 'https://another.com/']
+    )->usingTransformers(new TestTransformer);
+
+    $registrations = app(RegisteredTransformations::class)->all();
+
+    expect($registrations)->toHaveCount(1);
+
+    /** @var \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration */
+    $registration = $registrations[0];
+    $urls = iterator_to_array($registration->getUrls());
+
+    expect($urls)->toBe(['https://example.com/', 'https://another.com/']);
 });
 
 it('can register multiple transformations separately', function () {

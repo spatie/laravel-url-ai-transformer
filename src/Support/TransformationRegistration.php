@@ -28,7 +28,13 @@ class TransformationRegistration
         foreach ($this->urls as $url) {
             $url = $url instanceof Closure ? ($url)() : $url;
 
-            yield $url;
+            if (! is_array($url)) {
+                $url = [$url];
+            }
+
+            foreach ($url as $singleUrl) {
+                yield $singleUrl;
+            }
         }
     }
 
