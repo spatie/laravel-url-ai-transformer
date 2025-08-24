@@ -19,7 +19,6 @@ Transform::urls('https://example.com/blog/my-post')
 
 A transformer is a class where you can configure the AI transformation, and specify the prompt to use.
 
-
 The configured transformation can be run using the `transform-urls` command.
 
 ```bash

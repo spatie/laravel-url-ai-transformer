@@ -43,7 +43,7 @@ it('does not set successfully_completed_at when transformation fails', function 
 
     $result = TransformationResult::query()
         ->where('url', 'https://example.com')
-        ->where('type', 'Failing')
+        ->where('type', 'failing')
         ->first();
 
     expect($result)->not->toBeNull();

@@ -1,6 +1,6 @@
 ---
 title: Overriding actions
-weight: 2
+weight: 5
 ---
 
 Actions are class that handle the core operations of the package. By overriding them, you can customize how low-level operations are performed.

@@ -5,7 +5,7 @@ weight: 1
 
 Let's build a simple example that transforms blog posts into structured data. We'll use the `LdJsonTransformer` that comes with the package to extract structured information from web pages.
 
-First you, should use the `Transform` class to register URLs to transform, and which transformer to use:
+First, you should use the `Transform` class to register URLs to transform, and which transformer to use:
 
 
 ```php
@@ -61,11 +61,11 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 $ldJsonData = TransformationResult::forUrl('https://spatie.be/blog', 'ldJson');
 ```
 
-The first parameter is the URL, the second parameter is the transformer type. By default transformer type is the lowercased class name of the transformer without the `Transformer` suffix.
+The first parameter is the URL, the second parameter is the transformer type. By default, transformer type is the lowercased class name of the transformer without the `Transformer` suffix.
 
 ## Scheduling transformations
 
-To keep your transformations up-to-date, schedule the command to run periodically:
+To keep your transformations up to date, schedule the command to run periodically:
 
 ```php
 // In app/Console/Kernel.php

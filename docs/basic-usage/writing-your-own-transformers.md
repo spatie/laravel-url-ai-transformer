@@ -3,12 +3,11 @@ title: Writing your own transformers
 weight: 3
 ---
 
-The real power of this package comes from writing your own transformers. Let's explore how to create custom transformers
-that fit your specific needs.
+The real power of this package comes from writing your own transformers. Let's explore how to create custom transformers that fit your specific needs.
 
 ## Creating a basic transformer
 
-All transformers extend the `Transformer` base class and implement two required methods:
+All transformers extend the `Transformer` base class and implement two required methods `transform` and `getPrompt`.
 
 ```php
 // app/Transformers/SummaryTransformer.php
@@ -27,6 +26,7 @@ class SummaryTransformer extends Transformer
             ->withPrompt($this->getPrompt())
             ->asText();
 
+        // you should set the result property on the transformation result model to store the result
         $this->transformationResult->result = $response->text;
     }
 
@@ -51,36 +51,6 @@ When a transformer runs, it has access to three properties:
 - `$this->urlContent` - The fetched content from the URL
 - `$this->transformationResult` - The database model where you store results
 
-## Conditional transformations
-
-Sometimes you only want to run a transformer under certain conditions.
-
-You can add an option method `shouldRun` to your transformer. If `shouldRun` returns `false`, the transformer is skipped. This
-example only runs the transformation if it hasn't been successfully completed in the last 30 days.
-
-```php
-class MonthlyReportTransformer extends Transformer
-{
-    public function shouldRun(): bool
-    {
-        // Run if we've never transformed or if it's been more than 30 days
-        return $this
-            ->transformationResult
-            ->successfully_completed_at?
-            ->diffInDays() > 30 ?? true;
-    }
-
-    public function transform(): void
-    {
-        // Your transformation logic
-    }
-
-    public function getPrompt(): string
-    {
-        return "Generate a monthly report summary...";
-    }
-}
-```
 
 ## Custom transformer types
 

@@ -55,7 +55,7 @@ it('saves exception for all transformers when URL fetch fails', function () {
     expect($allResults)->toHaveCount(2);
 
     $ldResult = $allResults->firstWhere('type', 'ld');
-    $testResult = $allResults->firstWhere('type', 'Test');
+    $testResult = $allResults->firstWhere('type', 'test');
 
     expect($ldResult)->not->toBeNull();
     expect($ldResult->latest_exception_seen_at)->not->toBeNull();
@@ -132,7 +132,7 @@ it('only records exception for failing transformer when individual transformer f
 
     $failingResult = TransformationResult::query()
         ->where('url', 'https://example.com')
-        ->where('type', 'Failing')
+        ->where('type', 'failing')
         ->first();
 
     // Successful transformer should have no exception

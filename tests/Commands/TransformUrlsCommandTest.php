@@ -6,7 +6,6 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
-use Spatie\LaravelUrlAiTransformer\Transformers\ImageTransformer;
 
 it('can transform an URL', function () {
     Transform::urls('https://spatie.be')->usingTransformers(new DummyLdTransformer);
@@ -17,15 +16,6 @@ it('can transform an URL', function () {
 
     expect(TransformationResult::forUrl('https://spatie.be', 'ld'))->toBe('dummy result');
 });
-
-it('can transform a webpage to an image', function () {
-    Transform::urls('https://spatie.be/blog/how-to-make-your-ai-agent-program-with-grace-and-style')->usingTransformers(new ImageTransformer);
-
-    $this
-        ->artisan(TransformUrlsCommand::class)
-        ->assertSuccessful();
-
-})->skip();
 
 it('can filter transformations by exact URL', function () {
     Http::fake([
@@ -42,7 +32,7 @@ it('can filter transformations by exact URL', function () {
 
     // Only the matching URL should be processed
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
-    expect(TransformationResult::forUrl('https://spatie.be', 'Test'))->toBeNull();
+    expect(TransformationResult::forUrl('https://spatie.be', 'test'))->toBeNull();
 });
 
 it('can filter transformations using URL wildcards', function () {
@@ -62,7 +52,7 @@ it('can filter transformations using URL wildcards', function () {
 
     // Only URLs matching the wildcard should be processed
     expect(TransformationResult::forUrl('https://spatie.be/blog/post-1', 'ld'))->toBe('dummy result');
-    expect(TransformationResult::forUrl('https://spatie.be/blog/post-2', 'Test'))->toBe('test');
+    expect(TransformationResult::forUrl('https://spatie.be/blog/post-2', 'test'))->toBe('test');
     expect(TransformationResult::forUrl('https://example.com/page', 'ld'))->toBeNull();
 });
 
@@ -82,7 +72,7 @@ it('can filter transformations by exact transformer type', function () {
 
     // Only the ld transformer should be processed
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
-    expect(TransformationResult::forUrl('https://example.com', 'Test'))->toBeNull();
+    expect(TransformationResult::forUrl('https://example.com', 'test'))->toBeNull();
 });
 
 it('can filter transformations using transformer wildcards', function () {
@@ -96,12 +86,12 @@ it('can filter transformations using transformer wildcards', function () {
     );
 
     $this
-        ->artisan(TransformUrlsCommand::class, ['--transformer' => 'T*'])
+        ->artisan(TransformUrlsCommand::class, ['--transformer' => 't*'])
         ->assertSuccessful();
 
     // Only the Test transformer should be processed
     expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBeNull();
-    expect(TransformationResult::forUrl('https://example.com', 'Test'))->toBe('test');
+    expect(TransformationResult::forUrl('https://example.com', 'test'))->toBe('test');
 });
 
 it('can combine URL and transformer filters', function () {
@@ -134,10 +124,10 @@ it('can combine URL and transformer filters', function () {
     // Only blog URLs with ld transformer should be processed
     expect(TransformationResult::forUrl('https://spatie.be/blog/post-1', 'ld'))->toBe('dummy result');
     expect(TransformationResult::forUrl('https://spatie.be/blog/post-2', 'ld'))->toBe('dummy result');
-    expect(TransformationResult::forUrl('https://spatie.be/blog/post-1', 'Test'))->toBeNull();
-    expect(TransformationResult::forUrl('https://spatie.be/blog/post-2', 'Test'))->toBeNull();
+    expect(TransformationResult::forUrl('https://spatie.be/blog/post-1', 'test'))->toBeNull();
+    expect(TransformationResult::forUrl('https://spatie.be/blog/post-2', 'test'))->toBeNull();
     expect(TransformationResult::forUrl('https://example.com/page', 'ld'))->toBeNull();
-    expect(TransformationResult::forUrl('https://example.com/page', 'Test'))->toBeNull();
+    expect(TransformationResult::forUrl('https://example.com/page', 'test'))->toBeNull();
 });
 
 it('processes all transformations when no filters are provided', function () {
@@ -170,14 +160,14 @@ it('forces transformations to run even when shouldRun returns false', function (
         ->artisan(TransformUrlsCommand::class)
         ->assertSuccessful();
 
-    expect(TransformationResult::forUrl('https://example.com', 'Skippable'))->toBeNull();
+    expect(TransformationResult::forUrl('https://example.com', 'skippable'))->toBeNull();
 
     // With force, the skippable transformer should run
     $this
         ->artisan(TransformUrlsCommand::class, ['--force' => true])
         ->assertSuccessful();
 
-    expect(TransformationResult::forUrl('https://example.com', 'Skippable'))->toBe('should not be set');
+    expect(TransformationResult::forUrl('https://example.com', 'skippable'))->toBe('should not be set');
 });
 
 it('runs transformations immediately when using --now option', function () {
