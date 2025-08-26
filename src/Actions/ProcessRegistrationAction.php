@@ -76,7 +76,11 @@ class ProcessRegistrationAction
             ? 'dispatchSync'
             : 'dispatch';
 
-        $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
+        try {
+            $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
+        } catch (Exception $exception) {
+            report($exception);
+        }
     }
 
     protected function getTransformationResult(
