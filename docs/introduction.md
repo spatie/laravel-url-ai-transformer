@@ -30,6 +30,5 @@ After the transformation is complete, you can retrieve the transformed content u
 ```php
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
-$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post','ldJson'
-);
+$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post','ldJson');
 ```
