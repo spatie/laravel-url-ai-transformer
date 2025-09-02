@@ -52,10 +52,8 @@ class ProcessTransformerJob implements ShouldQueue
 
         $transformer->setTransformationProperties($this->url, $this->urlContent, $transformationResult);
 
-        if (! $this->force) {
-            if (! $transformer->shouldRun()) {
-                return;
-            }
+        if (! $this->force && ! $transformer->shouldRun()) {
+            return;
         }
 
         event(new TransformerStarted($transformer, $transformationResult, $this->url, $this->urlContent));
