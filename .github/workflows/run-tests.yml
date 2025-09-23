@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.4]
-        laravel: [12.*]
+        laravel: [12.*, 11.*]
         stability: [prefer-lowest, prefer-stable]
 
 
