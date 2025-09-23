@@ -6,58 +6,58 @@ use Exception;
 
 class InvalidConfig extends Exception
 {
-    public static function actionKeyNotFound(string $actionName): static
+    public static function actionKeyNotFound(string $actionName): self
     {
-        return new static("There is no action with name `{$actionName}` configured in the `actions` key of the config file.");
+        return new self("There is no action with name `{$actionName}` configured in the `actions` key of the config file.");
     }
 
-    public static function actionClassDoesNotExist(string $actionClass): static
+    public static function actionClassDoesNotExist(string $actionClass): self
     {
-        return new static("Action class '{$actionClass}' does not exist.");
+        return new self("Action class '{$actionClass}' does not exist.");
     }
 
-    public static function modelClassNotConfigured(): static
+    public static function modelClassNotConfigured(): self
     {
-        return new static('Model class not configured. Please set the `model` key in the config file to the fully qualified class name of your model.');
+        return new self('Model class not configured. Please set the `model` key in the config file to the fully qualified class name of your model.');
     }
 
-    public static function modelClassDoesNotExist(string $modelClass): static
+    public static function modelClassDoesNotExist(string $modelClass): self
     {
-        return new static("Model class '{$modelClass}' does not exist");
+        return new self("Model class '{$modelClass}' does not exist");
     }
 
-    public static function aiProviderNotConfigured(string $configName): static
+    public static function aiProviderNotConfigured(string $configName): self
     {
-        return new static("AI provider not configured for '{$configName}'");
+        return new self("AI provider not configured for '{$configName}'");
     }
 
-    public static function invalidAiProvider(string $configName): static
+    public static function invalidAiProvider(string $configName): self
     {
-        return new static("Invalid AI provider configured for '{$configName}'");
+        return new self("Invalid AI provider configured for '{$configName}'");
     }
 
-    public static function aiModelNotConfigured(string $configName): static
+    public static function aiModelNotConfigured(string $configName): self
     {
-        return new static("AI model not configured for '{$configName}'");
+        return new self("AI model not configured for '{$configName}'");
     }
 
-    public static function actionClassDoesNotExtend(string $actionClass, string $mustBeOrExtend): static
+    public static function actionClassDoesNotExtend(string $actionClass, string $mustBeOrExtend): self
     {
-        return new static("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
+        return new self("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
     }
 
-    public static function jobKeyNotFound(string $jobName): static
+    public static function jobKeyNotFound(string $jobName): self
     {
-        return new static("There is no job with name `{$jobName}` configured in the `jobs` key of the config file.");
+        return new self("There is no job with name `{$jobName}` configured in the `jobs` key of the config file.");
     }
 
-    public static function jobClassDoesNotExist(string $jobClass): static
+    public static function jobClassDoesNotExist(string $jobClass): self
     {
-        return new static("Job class '{$jobClass}' does not exist.");
+        return new self("Job class '{$jobClass}' does not exist.");
     }
 
-    public static function jobClassDoesNotExtend(string $jobClass, string $mustBeOrExtend): static
+    public static function jobClassDoesNotExtend(string $jobClass, string $mustBeOrExtend): self
     {
-        return new static("Job class '{$jobClass}' must be or extend '{$mustBeOrExtend}'");
+        return new self("Job class '{$jobClass}' must be or extend '{$mustBeOrExtend}'");
     }
 }
