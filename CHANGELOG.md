@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 1.1.1 - 2025-10-06
+
+### What's Changed
+
+* Update prism-php/prism requirement from ^0.89.0 to ^0.90.0 by @dependabot[bot] in https://github.com/spatie/laravel-url-ai-transformer/pull/9
+
+**Full Changelog**: https://github.com/spatie/laravel-url-ai-transformer/compare/1.1.0...1.1.1
+
 ## 1.1.0 - 2025-09-23
 
 ### What's Changed
