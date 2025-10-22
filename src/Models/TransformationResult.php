@@ -5,6 +5,7 @@ namespace Spatie\LaravelUrlAiTransformer\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
+use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
@@ -66,13 +67,11 @@ class TransformationResult extends Model
 
         $urlContent = $fetchAction->execute($this->url);
 
-        $jobClass = Config::getProcessTransformationJobClass();
-
         $method = $now
             ? 'dispatchSync'
             : 'dispatch';
 
-        $jobClass::$method($transformerClass, $this->url, $urlContent);
+        ProcessTransformerJob::$method($transformerClass, $this->url, $urlContent);
     }
 
     public function regenerateNow(): void

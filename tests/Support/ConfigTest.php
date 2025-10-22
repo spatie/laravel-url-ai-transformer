@@ -37,24 +37,6 @@ it('can get an action instance', function () {
     expect($action)->toBeInstanceOf(stdClass::class);
 });
 
-it('can get the model class', function () {
-    $modelClass = Config::model();
-
-    expect($modelClass)->toBe(TransformationResult::class);
-});
-
-it('throws an exception when model class is not configured', function () {
-    config()->set('url-ai-transformer.model', null);
-
-    Config::model();
-})->throws(InvalidConfig::class);
-
-it('throws an exception when model class does not exist', function () {
-    config()->set('url-ai-transformer.model', 'NonExistentModel');
-
-    Config::model();
-})->throws(InvalidConfig::class);
-
 it('can get the AI provider', function () {
     $provider = Config::aiProvider();
 

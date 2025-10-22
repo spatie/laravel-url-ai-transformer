@@ -73,8 +73,6 @@ class ProcessTransformerJob implements ShouldQueue
 
     protected function getTransformationResult(Transformer $transformer): TransformationResult
     {
-        $model = Config::model();
-
-        return $model::findOrCreateForRegistration($this->url, $transformer);
+        return TransformationResult::findOrCreateForRegistration($this->url, $transformer);
     }
 }

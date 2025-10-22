@@ -5,6 +5,7 @@ namespace Spatie\LaravelUrlAiTransformer\Actions;
 use Exception;
 use Illuminate\Support\Collection;
 use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
+use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
@@ -70,14 +71,12 @@ class ProcessRegistrationAction
         bool $force,
         bool $now,
     ): void {
-        $processTransformationJob = Config::getProcessTransformationJobClass();
-
         $dispatchMethod = $now
             ? 'dispatchSync'
             : 'dispatch';
 
         try {
-            $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
+            ProcessTransformerJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
         } catch (Exception $exception) {
             report($exception);
         }
@@ -87,9 +86,7 @@ class ProcessRegistrationAction
         string $url,
         Transformer $transformer,
     ): TransformationResult {
-        $model = Config::model();
-
-        return $model::findOrCreateForRegistration($url, $transformer);
+        return TransformationResult::findOrCreateForRegistration($url, $transformer);
     }
 
     protected function recordExceptionForAllTransformers(
