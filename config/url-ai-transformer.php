@@ -2,17 +2,6 @@
 
 return [
     /*
-     * The actions that will perform low-level operations of the package.
-     *
-     * You can extend the default actions and specify your own actions here
-     * to customize the package's behavior.
-     */
-    'actions' => [
-        'fetch_url_content' => Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction::class,
-        'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,
-    ],
-
-    /*
      * By default, the transformers that ship with this package leverage the wonderful
      * Prism package to interact with various AI services.
      *

@@ -2,11 +2,15 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
-use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
+use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class TransformUrlsCommand extends Command
 {
@@ -41,8 +45,81 @@ class TransformUrlsCommand extends Command
         bool $force,
         bool $now,
     ): void {
-        $processRegistrationAction = Config::getAction('process_registration', ProcessRegistrationAction::class);
+        $transformers = $registration->getTransformers();
 
-        $processRegistrationAction->execute($registration, $urlFilter, $transformerFilter, $force, $now);
+        if ($transformerFilter) {
+            $transformers = $transformers->filter(fn (Transformer $transformer) => fnmatch($transformerFilter, $transformer->type()));
+        }
+
+        foreach ($registration->getUrls() as $url) {
+            if ($urlFilter && fnmatch($urlFilter, $url) === false) {
+                continue;
+            }
+            $this->processUrl($url, $transformers, $force, $now);
+        }
+    }
+
+    protected function processUrl(
+        string $url,
+        Collection $transformers,
+        bool $force,
+        bool $now,
+    ): void {
+        try {
+            $urlContent = $this->fetchUrlContent($url);
+        } catch (Exception $exception) {
+            $this->recordExceptionForAllTransformers($url, $transformers, $exception);
+
+            return;
+        }
+
+        foreach ($transformers as $transformer) {
+            $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now);
+        }
+    }
+
+    protected function fetchUrlContent(string $url): string
+    {
+        if (! str_starts_with($url, 'http')) {
+            $url = url($url);
+        }
+
+        return Http::get($url)->throw()->body();
+    }
+
+    protected function dispatchTransformerJob(
+        Transformer $transformer,
+        string $url,
+        string $urlContent,
+        bool $force,
+        bool $now,
+    ): void {
+        $dispatchMethod = $now
+            ? 'dispatchSync'
+            : 'dispatch';
+
+        try {
+            ProcessTransformerJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
+        } catch (Exception $exception) {
+            report($exception);
+        }
+    }
+
+    protected function getTransformationResult(
+        string $url,
+        Transformer $transformer,
+    ): TransformationResult {
+        return TransformationResult::findOrCreateForRegistration($url, $transformer);
+    }
+
+    protected function recordExceptionForAllTransformers(
+        string $url,
+        Collection $transformers,
+        Exception $exception,
+    ): void {
+        foreach ($transformers as $transformer) {
+            $transformationResult = $this->getTransformationResult($url, $transformer);
+            $transformationResult->recordException($exception);
+        }
     }
 }

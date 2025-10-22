@@ -8,11 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Spatie\LaravelUrlAiTransformer\Events\TransformerEnded;
-use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
-use Spatie\LaravelUrlAiTransformer\Events\TransformerStarted;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
 class ProcessTransformerJob implements ShouldQueue
@@ -41,8 +37,6 @@ class ProcessTransformerJob implements ShouldQueue
             $transformationResult->recordException($exception);
 
             report($exception);
-
-            event(new TransformerFailed($transformer, $transformationResult, $exception));
         }
     }
 
@@ -58,11 +52,7 @@ class ProcessTransformerJob implements ShouldQueue
             }
         }
 
-        event(new TransformerStarted($transformer, $transformationResult, $this->url, $this->urlContent));
-
         $transformer->transform();
-
-        event(new TransformerEnded($transformer, $transformationResult, $this->url, $this->urlContent));
 
         $transformationResult->successfully_completed_at = now();
 

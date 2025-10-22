@@ -4,9 +4,8 @@ namespace Spatie\LaravelUrlAiTransformer\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
+use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 
@@ -63,9 +62,12 @@ class TransformationResult extends Model
     {
         $transformerClass = app(RegisteredTransformations::class)->getTransformationClassForType($this->type);
 
-        $fetchAction = Config::getAction('fetch_url_content', FetchUrlContentAction::class);
+        $url = $this->url;
+        if (! str_starts_with($url, 'http')) {
+            $url = url($url);
+        }
 
-        $urlContent = $fetchAction->execute($this->url);
+        $urlContent = Http::get($url)->throw()->body();
 
         $method = $now
             ? 'dispatchSync'
