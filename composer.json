@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "illuminate/contracts": "^12.0|^11.0",
+        "illuminate/contracts": "^13.0|^12.0|^11.0",
         "prism-php/prism": "^0.99.0",
         "spatie/laravel-package-tools": "^1.92.7"
     },
@@ -25,7 +25,7 @@
         "laravel/pint": "^1.24",
         "nunomaduro/collision": "^7.0|^8.8.2",
         "larastan/larastan": "^3.6",
-        "orchestra/testbench": "^9.0|^10.6.0",
+        "orchestra/testbench": "^9.0|^10.6.0|^11.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
