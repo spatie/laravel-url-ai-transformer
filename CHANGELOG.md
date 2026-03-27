@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 1.3.0 - 2026-03-27
+
+### What's Changed
+
+* Update prism-php/prism requirement from ^0.99.0 to ^0.100.1
+
 ## 1.1.1 - 2025-10-06
 
 ### What's Changed
