@@ -3,7 +3,7 @@
 namespace Spatie\LaravelUrlAiTransformer\Transformers;
 
 use Illuminate\Support\Str;
-use Prism\Prism\Prism;
+use Prism\Prism\Facades\Prism;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 
 class LdJsonTransformer extends Transformer

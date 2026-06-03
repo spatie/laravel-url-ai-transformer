@@ -4,6 +4,7 @@ namespace Spatie\LaravelUrlAiTransformer\Tests\TestSupport;
 
 use Dotenv\Dotenv;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Prism\Prism\PrismServiceProvider;
 use Spatie\LaravelUrlAiTransformer\UrlAiTransformerServiceProvider;
 
 class TestCase extends Orchestra
@@ -22,6 +23,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            PrismServiceProvider::class,
             UrlAiTransformerServiceProvider::class,
         ];
     }
