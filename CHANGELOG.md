@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 1.3.1 - 2026-06-03
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.5.0 to 3.0.0 by @dependabot[bot] in https://github.com/spatie/laravel-url-ai-transformer/pull/24
+* Bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 by @dependabot[bot] in https://github.com/spatie/laravel-url-ai-transformer/pull/25
+* fix: use Prism facade instead of class for static calls in LdJsonTransformer by @Nelwhix in https://github.com/spatie/laravel-url-ai-transformer/pull/26
+
+### New Contributors
+
+* @Nelwhix made their first contribution in https://github.com/spatie/laravel-url-ai-transformer/pull/26
+
+**Full Changelog**: https://github.com/spatie/laravel-url-ai-transformer/compare/1.3.0...1.3.1
+
 ## 1.3.0 - 2026-03-27
 
 ### What's Changed
