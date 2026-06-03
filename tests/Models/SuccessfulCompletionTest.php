@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
@@ -25,7 +26,7 @@ it('sets successfully_completed_at when transformation succeeds', function () {
 
     expect($result)->not->toBeNull();
     expect($result->successfully_completed_at)->not->toBeNull();
-    expect($result->successfully_completed_at)->toBeInstanceOf(\Carbon\Carbon::class);
+    expect($result->successfully_completed_at)->toBeInstanceOf(Carbon::class);
     expect($result->result)->toBe('dummy result');
     expect($result->latest_exception_seen_at)->toBeNull();
 });

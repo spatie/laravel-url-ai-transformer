@@ -2,13 +2,13 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Tests\Transformers;
 
-use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Prism\Prism\Enums\FinishReason;
 use Prism\Prism\Facades\Prism;
 use Prism\Prism\Text\Response;
-use Prism\Prism\Enums\FinishReason;
-use Prism\Prism\ValueObjects\Usage;
 use Prism\Prism\ValueObjects\Meta;
+use Prism\Prism\ValueObjects\Usage;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
 
 it('can transform content to ld+json using prism', function () {
     Prism::fake([
@@ -21,14 +21,14 @@ it('can transform content to ld+json using prism', function () {
             usage: new Usage(10, 20),
             meta: new Meta('1', 'gpt-4'),
             messages: collect(),
-        )
+        ),
     ]);
 
-    $transformer = new LdJsonTransformer();
+    $transformer = new LdJsonTransformer;
     $transformer->setTransformationProperties(
         'https://example.com',
         '<html lang=""><body><h1>Hello World</h1></body></html>',
-        new TransformationResult()
+        new TransformationResult
     );
 
     $transformer->transform();

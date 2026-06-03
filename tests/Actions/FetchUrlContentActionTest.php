@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 
@@ -22,7 +23,7 @@ it('throws exception on HTTP error', function () {
     $action = new FetchUrlContentAction;
 
     expect(fn () => $action->execute('https://example.com'))
-        ->toThrow(\Illuminate\Http\Client\RequestException::class);
+        ->toThrow(RequestException::class);
 });
 
 it('can be overridden with custom implementation', function () {

@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Schema;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
 
 it('can serialize and unserialize the job for production queues', function () {
@@ -32,7 +34,7 @@ it('can serialize and unserialize the job for production queues', function () {
     $unserialized->handle();
 
     // Verify it worked
-    expect(\Spatie\LaravelUrlAiTransformer\Models\TransformationResult::count())->toBe(1);
+    expect(TransformationResult::count())->toBe(1);
 });
 
 it('can dispatch to database queue without serialization issues', function () {
@@ -40,7 +42,7 @@ it('can dispatch to database queue without serialization issues', function () {
     config(['queue.default' => 'database']);
 
     // Set up database queue table (simplified for test)
-    \Illuminate\Support\Facades\Schema::create('jobs', function ($table) {
+    Schema::create('jobs', function ($table) {
         $table->bigIncrements('id');
         $table->string('queue')->index();
         $table->longText('payload');

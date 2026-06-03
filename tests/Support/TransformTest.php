@@ -2,6 +2,7 @@
 
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
+use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
 
 it('can register a single url', function () {
@@ -59,7 +60,7 @@ it('can register urls using closures that return a single url', function () {
 
     expect($registrations)->toHaveCount(1);
 
-    /** @var \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration */
+    /** @var TransformationRegistration $registration */
     $registration = $registrations[0];
     $urls = iterator_to_array($registration->getUrls());
 
@@ -75,7 +76,7 @@ it('can register urls using closures that return an array of urls', function () 
 
     expect($registrations)->toHaveCount(1);
 
-    /** @var \Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration $registration */
+    /** @var TransformationRegistration $registration */
     $registration = $registrations[0];
     $urls = iterator_to_array($registration->getUrls());
 

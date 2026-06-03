@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
@@ -91,7 +92,7 @@ it('processes successful URLs normally when no exception occurs', function () {
 
 it('handles connection timeout exceptions', function () {
     Http::fake(function () {
-        throw new RequestException(new \GuzzleHttp\Psr7\Response(0, [], 'Connection timeout'));
+        throw new RequestException(new Response(0, [], 'Connection timeout'));
     });
 
     Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);

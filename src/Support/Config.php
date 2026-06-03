@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
+use Illuminate\Database\Eloquent\Model;
 use Prism\Prism\Enums\Provider;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
@@ -47,7 +48,7 @@ class Config
     }
 
     /**
-     * @return class-string<\Illuminate\Database\Eloquent\Model>
+     * @return class-string<Model>
      */
     public static function model(): string
     {
@@ -91,7 +92,7 @@ class Config
     }
 
     /**
-     * @return class-string<\Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob>
+     * @return class-string<ProcessTransformerJob>
      */
     public static function getProcessTransformationJobClass(): string
     {

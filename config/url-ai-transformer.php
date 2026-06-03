@@ -1,12 +1,18 @@
 <?php
 
+use Prism\Prism\Enums\Provider;
+use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
+use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
+use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+
 return [
     /*
      * The model that will be used to store the transformation results.
      *
      * You can use your own model by extending the default model.
      */
-    'model' => Spatie\LaravelUrlAiTransformer\Models\TransformationResult::class,
+    'model' => TransformationResult::class,
 
     /*
      * The actions that will perform low-level operations of the package.
@@ -15,8 +21,8 @@ return [
      * to customize the package's behavior.
      */
     'actions' => [
-        'fetch_url_content' => Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction::class,
-        'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,
+        'fetch_url_content' => FetchUrlContentAction::class,
+        'process_registration' => ProcessRegistrationAction::class,
     ],
 
     /*
@@ -26,7 +32,7 @@ return [
      * to customize the package's behavior.
      */
 
-    'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
+    'process_transformer_job' => ProcessTransformerJob::class,
 
     /*
      * By default, the transformers that ship with this package leverage the wonderful
@@ -38,12 +44,12 @@ return [
      */
     'ai' => [
         'default' => [
-            'provider' => Prism\Prism\Enums\Provider::OpenAI,
+            'provider' => Provider::OpenAI,
             'model' => 'gpt-4o-mini',
         ],
 
         'image' => [
-            'provider' => Prism\Prism\Enums\Provider::OpenAI,
+            'provider' => Provider::OpenAI,
             'model' => 'dall-e-3',
         ],
     ],

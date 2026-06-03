@@ -5,6 +5,7 @@ use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransformer;
+use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
 
 it('can transform an URL', function () {
@@ -153,7 +154,7 @@ it('forces transformations to run even when shouldRun returns false', function (
         'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
     ]);
 
-    Transform::urls('https://example.com')->usingTransformers(new \Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer);
+    Transform::urls('https://example.com')->usingTransformers(new SkippableTransformer);
 
     // Without force, the skippable transformer should not run
     $this
