@@ -37,7 +37,7 @@ class SummaryTransformer extends Transformer
 
     public function content(): string
     {
-        return str(strip_tags($this->urlContent))->limit(6000);
+        return (string) str(strip_tags($this->urlContent))->limit(6000);
     }
 }
 ```
@@ -76,7 +76,6 @@ You can use your custom type when retrieving a transformation result:
 
 ```php
 $ldJsonData = TransformationResult::forUrl('https://spatie.be/blog', 'customType');
-
-````
+```
 
 
