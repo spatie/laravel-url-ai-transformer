@@ -35,22 +35,18 @@ return [
     'process_transformer_job' => ProcessTransformerJob::class,
 
     /*
-     * By default, the transformers that ship with this package leverage the official
-     * Laravel AI package to interact with various AI services.
+     * The default AI provider and model that transformers use. Under the hood,
+     * this package leverages the official Laravel AI package to interact with
+     * various AI services.
      *
      * https://github.com/laravel/ai
      *
-     * You can customize the default settings here.
+     * Individual transformers may override these defaults using Laravel AI's
+     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
+     * #[UseSmartestModel].
      */
     'ai' => [
-        'default' => [
-            'provider' => Lab::OpenAI,
-            'model' => 'gpt-4o-mini',
-        ],
-
-        'image' => [
-            'provider' => Lab::OpenAI,
-            'model' => 'dall-e-3',
-        ],
+        'provider' => Lab::OpenAI,
+        'model' => 'gpt-4o-mini',
     ],
 ];

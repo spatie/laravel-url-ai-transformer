@@ -34,7 +34,44 @@ class CreativeTransformer extends Transformer
 }
 ```
 
-The provider and model come from the config file. To change them, update `config/url-ai-transformer.php` or publish a new config profile. For detailed information about the available providers, models, and options, check out the [Laravel AI documentation](https://github.com/laravel/ai).
+## Choosing a provider and model per transformer
+
+By default, transformers use the `provider` and `model` from `config/url-ai-transformer.php`. A transformer can override this with Laravel AI's attributes.
+
+Use `#[UseCheapestModel]` or `#[UseSmartestModel]` to let the provider pick the right model without naming it. The configured provider is respected, only the model changes.
+
+```php
+use Laravel\Ai\Attributes\UseSmartestModel;
+
+#[UseSmartestModel]
+class ThoroughTransformer extends Transformer
+{
+    public function instructions(): Stringable|string
+    {
+        return 'Produce a detailed, high quality summary.';
+    }
+}
+```
+
+Use `#[Model]` to pin a specific model, or `#[Provider]` to use a different provider entirely (in which case its default model is used unless you also add `#[Model]`).
+
+```php
+use Laravel\Ai\Attributes\Model;
+use Laravel\Ai\Attributes\Provider;
+use Laravel\Ai\Enums\Lab;
+
+#[Provider(Lab::Anthropic)]
+#[Model('claude-haiku-4-5-20251001')]
+class ClaudeTransformer extends Transformer
+{
+    public function instructions(): Stringable|string
+    {
+        return 'Summarize this webpage.';
+    }
+}
+```
+
+For detailed information about the available providers, models, and options, check out the [Laravel AI documentation](https://github.com/laravel/ai).
 
 ## Transformers without AI
 

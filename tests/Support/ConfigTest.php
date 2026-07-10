@@ -61,24 +61,22 @@ it('can get the AI provider', function () {
     expect($provider)->toBe(Lab::OpenAI);
 });
 
-it('can get the AI provider for a specific config', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', Lab::Anthropic);
+it('can get a custom configured AI provider', function () {
+    config()->set('url-ai-transformer.ai.provider', Lab::Anthropic);
 
-    $provider = Config::aiProvider('custom');
-
-    expect($provider)->toBe(Lab::Anthropic);
+    expect(Config::aiProvider())->toBe(Lab::Anthropic);
 });
 
 it('throws an exception when AI provider is not configured', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', null);
+    config()->set('url-ai-transformer.ai.provider', null);
 
-    Config::aiProvider('custom');
+    Config::aiProvider();
 })->throws(InvalidConfig::class);
 
 it('throws an exception when AI provider is invalid', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', 'invalid_provider');
+    config()->set('url-ai-transformer.ai.provider', 'invalid_provider');
 
-    Config::aiProvider('custom');
+    Config::aiProvider();
 })->throws(InvalidConfig::class);
 
 it('can get the AI model', function () {
@@ -87,16 +85,14 @@ it('can get the AI model', function () {
     expect($model)->toBe('gpt-4o-mini');
 });
 
-it('can get the AI model for a specific config', function () {
-    config()->set('url-ai-transformer.ai.custom.model', 'custom-model');
+it('can get a custom configured AI model', function () {
+    config()->set('url-ai-transformer.ai.model', 'custom-model');
 
-    $model = Config::aiModel('custom');
-
-    expect($model)->toBe('custom-model');
+    expect(Config::aiModel())->toBe('custom-model');
 });
 
 it('throws an exception when AI model is not configured', function () {
-    config()->set('url-ai-transformer.ai.custom.model', null);
+    config()->set('url-ai-transformer.ai.model', null);
 
-    Config::aiModel('custom');
+    Config::aiModel();
 })->throws(InvalidConfig::class);

@@ -65,27 +65,27 @@ class Config
         return $modelClass;
     }
 
-    public static function aiProvider(string $configName = 'default'): Lab
+    public static function aiProvider(): Lab
     {
-        $provider = config("url-ai-transformer.ai.{$configName}.provider");
+        $provider = config('url-ai-transformer.ai.provider');
 
         if (! $provider) {
-            throw InvalidConfig::aiProviderNotConfigured($configName);
+            throw InvalidConfig::aiProviderNotConfigured();
         }
 
         if (! $provider instanceof Lab) {
-            throw InvalidConfig::invalidAiProvider($configName);
+            throw InvalidConfig::invalidAiProvider();
         }
 
         return $provider;
     }
 
-    public static function aiModel(string $configName = 'default'): string
+    public static function aiModel(): string
     {
-        $model = config("url-ai-transformer.ai.{$configName}.model");
+        $model = config('url-ai-transformer.ai.model');
 
         if (! $model) {
-            throw InvalidConfig::aiModelNotConfigured($configName);
+            throw InvalidConfig::aiModelNotConfigured();
         }
 
         return $model;
