@@ -58,32 +58,7 @@ When a transformer runs, it has access to three properties:
 
 ## Returning structured output
 
-Instead of free-form text, you can have a transformer return validated, structured data. Implement Laravel AI's `HasStructuredOutput` contract and define a `schema()`. The transformer stores the structured result as JSON on the transformation result.
-
-```php
-use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Laravel\Ai\Contracts\HasStructuredOutput;
-use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
-use Stringable;
-
-class ProductTransformer extends Transformer implements HasStructuredOutput
-{
-    public function instructions(): Stringable|string
-    {
-        return 'Extract the product details from this webpage.';
-    }
-
-    public function schema(JsonSchema $schema): array
-    {
-        return [
-            'name' => $schema->string()->required(),
-            'price' => $schema->number()->required(),
-        ];
-    }
-}
-```
-
-The stored `result` will be the JSON of the structured output, for example `{"name":"...","price":...}`.
+Instead of free-form text, a transformer can return validated, machine-readable data by defining a schema. See [Structured output](../advanced-usage/structured-output) for the details.
 
 ## Custom transformer types
 
