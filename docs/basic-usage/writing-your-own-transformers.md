@@ -60,6 +60,29 @@ When a transformer runs, it has access to three properties:
 
 Instead of free-form text, a transformer can return validated, machine-readable data by defining a schema. See [Structured output](../advanced-usage/structured-output) for the details.
 
+## Customizing the stored result
+
+By default the transformer stores the AI's text response (or, for a schema transformer, its structured JSON). To change what gets stored, override the `resultFrom()` method. It receives the Laravel AI response and returns the string to store.
+
+```php
+use Laravel\Ai\Responses\AgentResponse;
+
+class SummaryTransformer extends Transformer
+{
+    public function instructions(): Stringable|string
+    {
+        return 'Summarize this webpage.';
+    }
+
+    protected function resultFrom(AgentResponse $response): string
+    {
+        return trim(strip_tags($response->text));
+    }
+}
+```
+
+If you need to control how results are persisted (for example, writing extra columns), extend the process transformer job (see [Advanced usage](../advanced-usage)), or listen for the `TransformerEnded` event.
+
 ## Custom transformer types
 
 By default, the transformer type is derived from the class name. You can override this:
