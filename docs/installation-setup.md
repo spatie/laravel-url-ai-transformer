@@ -22,6 +22,22 @@ This is the content of the published config file:
 ```php
 return [
     /*
+     * The default AI provider and model that transformers use. Under the hood,
+     * this package leverages the official Laravel AI package to interact with
+     * various AI services.
+     *
+     * https://github.com/laravel/ai
+     *
+     * Individual transformers may override these defaults using Laravel AI's
+     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
+     * #[UseSmartestModel].
+     */
+    'ai' => [
+        'provider' => Laravel\Ai\Enums\Lab::OpenAI,
+        'model' => 'gpt-4o-mini',
+    ],
+
+    /*
      * The model that will be used to store the transformation results.
      *
      * You can use your own model by extending the default model.
@@ -47,22 +63,6 @@ return [
      */
 
     'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
-
-    /*
-     * The default AI provider and model that transformers use. Under the hood,
-     * this package leverages the official Laravel AI package to interact with
-     * various AI services.
-     *
-     * https://github.com/laravel/ai
-     *
-     * Individual transformers may override these defaults using Laravel AI's
-     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
-     * #[UseSmartestModel].
-     */
-    'ai' => [
-        'provider' => Laravel\Ai\Enums\Lab::OpenAI,
-        'model' => 'gpt-4o-mini',
-    ],
 ];
 ```
 

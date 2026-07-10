@@ -8,6 +8,25 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
 return [
     /*
+     * The default AI provider and model that transformers use. Under the hood,
+     * this package leverages the official Laravel AI package to interact with
+     * various AI services.
+     *
+     * https://github.com/laravel/ai
+     *
+     * The model may be a plain string, or Model::Cheapest / Model::Smartest to
+     * let the configured provider pick the model for you.
+     *
+     * Individual transformers may override these defaults using Laravel AI's
+     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
+     * #[UseSmartestModel].
+     */
+    'ai' => [
+        'provider' => Lab::OpenAI,
+        'model' => 'gpt-4o-mini',
+    ],
+
+    /*
      * The model that will be used to store the transformation results.
      *
      * You can use your own model by extending the default model.
@@ -33,23 +52,4 @@ return [
      */
 
     'process_transformer_job' => ProcessTransformerJob::class,
-
-    /*
-     * The default AI provider and model that transformers use. Under the hood,
-     * this package leverages the official Laravel AI package to interact with
-     * various AI services.
-     *
-     * https://github.com/laravel/ai
-     *
-     * The model may be a plain string, or Model::Cheapest / Model::Smartest to
-     * let the configured provider pick the model for you.
-     *
-     * Individual transformers may override these defaults using Laravel AI's
-     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
-     * #[UseSmartestModel].
-     */
-    'ai' => [
-        'provider' => Lab::OpenAI,
-        'model' => 'gpt-4o-mini',
-    ],
 ];
