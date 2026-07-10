@@ -10,6 +10,7 @@ This section covers advanced features and customization options for power users.
 - [Overriding actions](./overriding-actions) - Customize how URLs are fetched and processed
 - [Customizing AI models](./customizing-ai-models) - Use different AI providers, models, and parameters per transformer
 - [Structured output](./structured-output) - Return validated, machine-readable data from a transformer
+- [Customizing the stored result](./customizing-the-result) - Post-process the response or save extra data on the model
 - [Conditional transformations](./conditional-transformations) - Control when transformers should run with sophisticated conditions
 - [Testing transformers](./testing-transformers) - Comprehensive testing strategies for your custom transformers
 

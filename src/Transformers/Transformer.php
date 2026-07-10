@@ -45,7 +45,7 @@ abstract class Transformer implements Agent
             model: $this->resolveModel($attributes),
         );
 
-        $this->transformationResult->result = $this->resultFrom($response);
+        $this->transformationResult->result = $this->resultFrom($response, $this->transformationResult);
     }
 
     public function content(): string
@@ -106,10 +106,13 @@ abstract class Transformer implements Agent
     }
 
     /**
+     * Return the value stored on the transformation result. Override this to
+     * post-process the response, or to set extra data on the given model.
+     *
      * A transformer that defines a schema (implements HasStructuredOutput)
      * receives a structured response, which we store as JSON.
      */
-    protected function resultFrom(AgentResponse $response): string
+    protected function resultFrom(AgentResponse $response, TransformationResult $transformationResult): string
     {
         if ($response instanceof StructuredAgentResponse) {
             return $response->toJson();
