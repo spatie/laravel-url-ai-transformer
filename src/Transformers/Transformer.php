@@ -11,6 +11,7 @@ use Laravel\Ai\Attributes\UseSmartestModel;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 use ReflectionAttribute;
 use ReflectionClass;
 use Spatie\LaravelUrlAiTransformer\Enums\Model as ModelPreference;
@@ -59,7 +60,11 @@ abstract class Transformer implements Agent
             model: $model,
         );
 
-        $this->transformationResult->result = $response->text;
+        // A transformer that defines a schema (implements HasStructuredOutput)
+        // receives a structured response, which we store as JSON.
+        $this->transformationResult->result = $response instanceof StructuredAgentResponse
+            ? $response->toJson()
+            : $response->text;
     }
 
     public function content(): string
