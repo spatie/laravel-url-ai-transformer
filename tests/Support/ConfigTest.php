@@ -83,7 +83,7 @@ it('throws an exception when AI provider is invalid', function () {
 it('can get the AI model', function () {
     $model = Config::aiModel();
 
-    expect($model)->toBe('gpt-4o-mini');
+    expect($model)->toBe(Model::Smartest);
 });
 
 it('can get a custom configured AI model', function () {
@@ -93,9 +93,9 @@ it('can get a custom configured AI model', function () {
 });
 
 it('can get a Model enum as the AI model', function () {
-    config()->set('url-ai-transformer.ai.model', Model::Smartest);
+    config()->set('url-ai-transformer.ai.model', Model::Cheapest);
 
-    expect(Config::aiModel())->toBe(Model::Smartest);
+    expect(Config::aiModel())->toBe(Model::Cheapest);
 });
 
 it('throws an exception when AI model is not configured', function () {

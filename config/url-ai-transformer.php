@@ -3,6 +3,7 @@
 use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
@@ -16,7 +17,7 @@ return [
      */
     'ai' => [
         'provider' => Lab::OpenAI,
-        'model' => 'gpt-4o-mini',
+        'model' => Model::Smartest,
     ],
 
     /*

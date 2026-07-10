@@ -30,7 +30,7 @@ return [
      */
     'ai' => [
         'provider' => Laravel\Ai\Enums\Lab::OpenAI,
-        'model' => 'gpt-4o-mini',
+        'model' => Spatie\LaravelUrlAiTransformer\Enums\Model::Smartest,
     ],
 
     /*
