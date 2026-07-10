@@ -11,6 +11,7 @@ use Laravel\Ai\Attributes\UseSmartestModel;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
+use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -38,33 +39,13 @@ abstract class Transformer implements Agent
     {
         $attributes = $this->aiAttributes();
 
-        // A #[Provider] attribute hands full resolution to Laravel AI. Otherwise we
-        // use the configured provider, and a model attribute (#[Model],
-        // #[UseCheapestModel], ...) overrides the configured model.
-        if (in_array(ProviderAttribute::class, $attributes, true)) {
-            $provider = $model = null;
-        } else {
-            $provider = Config::aiProvider();
-
-            $overridesModel = array_intersect(
-                [ModelAttribute::class, UseCheapestModel::class, UseSmartestModel::class],
-                $attributes,
-            ) !== [];
-
-            $model = $overridesModel ? null : $this->configuredModel($provider);
-        }
-
         $response = $this->prompt(
             prompt: $this->content(),
-            provider: $provider,
-            model: $model,
+            provider: $this->resolveProvider($attributes),
+            model: $this->resolveModel($attributes),
         );
 
-        // A transformer that defines a schema (implements HasStructuredOutput)
-        // receives a structured response, which we store as JSON.
-        $this->transformationResult->result = $response instanceof StructuredAgentResponse
-            ? $response->toJson()
-            : $response->text;
+        $this->transformationResult->result = $this->resultFrom($response);
     }
 
     public function content(): string
@@ -72,15 +53,69 @@ abstract class Transformer implements Agent
         return $this->urlContent;
     }
 
-    protected function configuredModel(Lab $provider): string
+    /**
+     * A #[Provider] attribute hands provider resolution to Laravel AI.
+     *
+     * @param  list<class-string>  $attributes
+     */
+    protected function resolveProvider(array $attributes): ?Lab
+    {
+        if (in_array(ProviderAttribute::class, $attributes, true)) {
+            return null;
+        }
+
+        return Config::aiProvider();
+    }
+
+    /**
+     * A #[Provider] or model attribute hands model resolution to Laravel AI.
+     *
+     * @param  list<class-string>  $attributes
+     */
+    protected function resolveModel(array $attributes): ?string
+    {
+        if ($this->overridesModel($attributes)) {
+            return null;
+        }
+
+        return $this->configuredModel();
+    }
+
+    /**
+     * @param  list<class-string>  $attributes
+     */
+    protected function overridesModel(array $attributes): bool
+    {
+        return array_intersect([
+            ProviderAttribute::class,
+            ModelAttribute::class,
+            UseCheapestModel::class,
+            UseSmartestModel::class,
+        ], $attributes) !== [];
+    }
+
+    protected function configuredModel(): string
     {
         $model = Config::aiModel();
 
         if ($model instanceof ModelPreference) {
-            return $model->resolve(Ai::textProvider($provider->value));
+            return $model->resolve(Ai::textProvider(Config::aiProvider()->value));
         }
 
         return $model;
+    }
+
+    /**
+     * A transformer that defines a schema (implements HasStructuredOutput)
+     * receives a structured response, which we store as JSON.
+     */
+    protected function resultFrom(AgentResponse $response): string
+    {
+        if ($response instanceof StructuredAgentResponse) {
+            return $response->toJson();
+        }
+
+        return $response->text;
     }
 
     /**
