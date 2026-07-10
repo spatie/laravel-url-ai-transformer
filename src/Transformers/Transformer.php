@@ -11,6 +11,7 @@ use Laravel\Ai\Attributes\UseSmartestModel;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
+use ReflectionAttribute;
 use ReflectionClass;
 use Spatie\LaravelUrlAiTransformer\Enums\Model as ModelPreference;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
@@ -34,20 +35,21 @@ abstract class Transformer implements Agent
 
     public function transform(): void
     {
-        $overridesProvider = $this->hasAiAttribute(ProviderAttribute::class);
+        $attributes = $this->aiAttributes();
 
-        $overridesModel = $overridesProvider
-            || $this->hasAiAttribute(ModelAttribute::class)
-            || $this->hasAiAttribute(UseCheapestModel::class)
-            || $this->hasAiAttribute(UseSmartestModel::class);
-
-        if ($overridesProvider) {
-            // A #[Provider] attribute hands full resolution to Laravel AI.
+        // A #[Provider] attribute hands full resolution to Laravel AI. Otherwise we
+        // use the configured provider, and a model attribute (#[Model],
+        // #[UseCheapestModel], ...) overrides the configured model.
+        if (in_array(ProviderAttribute::class, $attributes, true)) {
             $provider = $model = null;
         } else {
             $provider = Config::aiProvider();
 
-            // A model attribute (#[Model], #[UseCheapestModel], ...) overrides the configured model.
+            $overridesModel = array_intersect(
+                [ModelAttribute::class, UseCheapestModel::class, UseSmartestModel::class],
+                $attributes,
+            ) !== [];
+
             $model = $overridesModel ? null : $this->configuredModel($provider);
         }
 
@@ -76,9 +78,15 @@ abstract class Transformer implements Agent
         return $model;
     }
 
-    protected function hasAiAttribute(string $attribute): bool
+    /**
+     * @return list<class-string>
+     */
+    protected function aiAttributes(): array
     {
-        return (new ReflectionClass($this))->getAttributes($attribute) !== [];
+        return array_map(
+            fn (ReflectionAttribute $attribute): string => $attribute->getName(),
+            (new ReflectionClass($this))->getAttributes(),
+        );
     }
 
     public function setTransformationProperties(
