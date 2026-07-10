@@ -22,15 +22,11 @@ This is the content of the published config file:
 ```php
 return [
     /*
-     * The default AI provider and model that transformers use. Under the hood,
-     * this package leverages the official Laravel AI package to interact with
-     * various AI services.
+     * The default AI provider and model that transformers use. The model may be
+     * a plain string, or Model::Cheapest / Model::Smartest.
      *
-     * https://github.com/laravel/ai
-     *
-     * Individual transformers may override these defaults using Laravel AI's
-     * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
-     * #[UseSmartestModel].
+     * Transformers can override these defaults. Learn how in the docs:
+     * https://spatie.be/docs/laravel-url-ai-transformer/advanced-usage/customizing-ai-models
      */
     'ai' => [
         'provider' => Laravel\Ai\Enums\Lab::OpenAI,
