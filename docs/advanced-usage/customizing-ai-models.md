@@ -3,43 +3,38 @@ title: Customizing AI models
 weight: 3
 ---
 
-By default, transformers use the AI provider and model configured in your `config/url-ai-transformer.php` file. However, you can customize which AI models to use on a per-transformer basis, or even skip AI entirely.
+By default, transformers use the AI provider and model configured in your `config/url-ai-transformer.php` file. However, you can customize AI options on a per-transformer basis, or even skip AI entirely.
 
-This package uses [Prism](https://prismphp.com) under the hood for all AI interactions. Prism provides a unified interface for working with different AI providers like OpenAI, Anthropic, Google Gemini, and more. For detailed information about available providers, models, and configuration options, check out the [Prism documentation](https://prismphp.com/docs).
-
-Here's an example where we use various options like temperature and max tokens.
+This package uses the official [Laravel AI](https://github.com/laravel/ai) package under the hood for all AI interactions. Because every transformer is a Laravel AI agent, you can tune options like temperature and max tokens by adding attributes to the transformer class.
 
 ```php
+use Laravel\Ai\Attributes\MaxTokens;
+use Laravel\Ai\Attributes\Temperature;
+use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Stringable;
+
+#[MaxTokens(1000)]
+#[Temperature(0.1)] // Low temperature for precise, consistent output
 class PreciseTransformer extends Transformer
 {
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        $response = Prism::text()
-            ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt($this->getPrompt())
-            ->withMaxTokens(1000)
-            ->withTemperature(0.1) // Low temperature for precise, consistent output
-            ->asText();
-
-        $this->transformationResult->result = $response->text;
+        return 'Extract the key facts as accurately as possible.';
     }
 }
 
+#[MaxTokens(2000)]
+#[Temperature(0.8)] // Higher temperature for creative output
 class CreativeTransformer extends Transformer
 {
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        $response = Prism::text()
-            ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt($this->getPrompt())
-            ->withMaxTokens(2000)
-            ->withTemperature(0.8) // Higher temperature for creative output
-            ->asText();
-
-        $this->transformationResult->result = $response->text;
+        return 'Rewrite this webpage as an engaging summary.';
     }
 }
 ```
+
+The provider and model come from the config file. To change them, update `config/url-ai-transformer.php` or publish a new config profile. For detailed information about the available providers, models, and options, check out the [Laravel AI documentation](https://github.com/laravel/ai).
 
 ## Transformers without AI
 

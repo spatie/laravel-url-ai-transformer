@@ -5,7 +5,7 @@ weight: 1
 
 Testing transformers is fairly straightforward.
 
-Here's a quick example. Note that we can use Laravel's `Http` facade to fake the response of the external API.
+Here's a quick example. We use Laravel's `Http` facade to fake the fetched URL, and, because every transformer is a Laravel AI agent, we call `fake()` on the transformer to fake the AI response.
 
 ```php
 use App\Transformers\SummaryTransformer;
@@ -17,7 +17,11 @@ it('generates summaries for articles', function () {
     Http::fake([
         'https://example.com/article' => Http::response('<html><body>Test article content</body></html>'),
     ]);
-    
+
+    SummaryTransformer::fake([
+        "• First point\n• Second point\n• Third point",
+    ]);
+
     Transform::urls('https://example.com/article')
         ->usingTransformers(new SummaryTransformer);
 

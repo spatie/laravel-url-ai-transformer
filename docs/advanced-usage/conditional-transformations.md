@@ -21,14 +21,9 @@ class MonthlyReportTransformer extends Transformer
             ->diffInDays() > 30 ?? true;
     }
 
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        // Your transformation logic
-    }
-
-    public function getPrompt(): string
-    {
-        return "Generate a monthly report summary...";
+        return 'Generate a monthly report summary...';
     }
 }
 ```

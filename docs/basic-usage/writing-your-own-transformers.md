@@ -7,33 +7,37 @@ The real power of this package comes from writing your own transformers. Let's e
 
 ## Creating a basic transformer
 
-All transformers extend the `Transformer` base class and implement two required methods `transform` and `getPrompt`.
+Every transformer is a [Laravel AI](https://github.com/laravel/ai) agent. Extend the `Transformer` base class and implement `instructions()`, which returns the AI instructions to follow. The fetched URL content is sent along automatically as the prompt.
 
 ```php
 // app/Transformers/SummaryTransformer.php
 namespace App\Transformers;
 
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
-use Prism\Prism\Prism;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
+use Stringable;
 
 class SummaryTransformer extends Transformer
 {
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        $response = Prism::text()
-            ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt($this->getPrompt())
-            ->asText();
+        return 'Summarize this webpage content in 3 concise bullet points.';
+    }
+}
+```
 
-        // you should set the result property on the transformation result model to store the result
-        $this->transformationResult->result = $response->text;
+The base `Transformer` runs the AI call for you and stores the response on the transformation result. If you want to tweak the content that gets sent to the AI, override the `content()` method:
+
+```php
+class SummaryTransformer extends Transformer
+{
+    public function instructions(): Stringable|string
+    {
+        return 'Summarize this webpage content in 3 concise bullet points.';
     }
 
-    public function getPrompt(): string
+    public function content(): string
     {
-        return "Summarize this webpage content in 3 concise bullet points: \n\n" 
-            . $this->urlContent;
+        return str(strip_tags($this->urlContent))->limit(6000);
     }
 }
 ```
