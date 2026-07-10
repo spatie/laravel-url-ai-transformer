@@ -4,6 +4,7 @@ namespace Spatie\LaravelUrlAiTransformer\Exceptions;
 
 use Exception;
 use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 
 class InvalidConfig extends Exception
 {
@@ -40,6 +41,11 @@ class InvalidConfig extends Exception
     public static function aiModelNotConfigured(): self
     {
         return new self('AI model not configured. Set the `ai.model` key in the config file.');
+    }
+
+    public static function invalidAiModel(): self
+    {
+        return new self('Invalid AI model configured. The `ai.model` key must be a string or a '.Model::class.' enum.');
     }
 
     public static function actionClassDoesNotExtend(string $actionClass, string $mustBeOrExtend): self

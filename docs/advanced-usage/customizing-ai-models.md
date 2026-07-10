@@ -73,6 +73,22 @@ class ClaudeTransformer extends Transformer
 
 For detailed information about the available providers, models, and options, check out the [Laravel AI documentation](https://github.com/laravel/ai).
 
+## A cheapest or smartest default model
+
+The `model` in your config may be a plain string, or one of the `Model` enum cases. `Model::Cheapest` and `Model::Smartest` let the configured provider pick the model for you, so you don't have to track model names.
+
+```php
+// config/url-ai-transformer.php
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
+
+'ai' => [
+    'provider' => Laravel\Ai\Enums\Lab::OpenAI,
+    'model' => Model::Cheapest,
+],
+```
+
+Individual transformers can still override this with the attributes above.
+
 ## Transformers without AI
 
 Not all transformers need to use AI. You can create transformers that process content using traditional methods:

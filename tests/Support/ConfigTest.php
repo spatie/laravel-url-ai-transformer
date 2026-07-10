@@ -1,6 +1,7 @@
 <?php
 
 use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
@@ -91,8 +92,20 @@ it('can get a custom configured AI model', function () {
     expect(Config::aiModel())->toBe('custom-model');
 });
 
+it('can get a Model enum as the AI model', function () {
+    config()->set('url-ai-transformer.ai.model', Model::Smartest);
+
+    expect(Config::aiModel())->toBe(Model::Smartest);
+});
+
 it('throws an exception when AI model is not configured', function () {
     config()->set('url-ai-transformer.ai.model', null);
+
+    Config::aiModel();
+})->throws(InvalidConfig::class);
+
+it('throws an exception when the AI model is an invalid type', function () {
+    config()->set('url-ai-transformer.ai.model', ['not', 'a', 'model']);
 
     Config::aiModel();
 })->throws(InvalidConfig::class);

@@ -41,6 +41,9 @@ return [
      *
      * https://github.com/laravel/ai
      *
+     * The model may be a plain string, or Model::Cheapest / Model::Smartest to
+     * let the configured provider pick the model for you.
+     *
      * Individual transformers may override these defaults using Laravel AI's
      * attributes, like #[Model], #[Provider], #[UseCheapestModel] and
      * #[UseSmartestModel].

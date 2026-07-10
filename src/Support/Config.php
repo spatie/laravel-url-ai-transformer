@@ -4,6 +4,7 @@ namespace Spatie\LaravelUrlAiTransformer\Support;
 
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model as AiModel;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 
@@ -80,12 +81,16 @@ class Config
         return $provider;
     }
 
-    public static function aiModel(): string
+    public static function aiModel(): string|AiModel
     {
         $model = config('url-ai-transformer.ai.model');
 
         if (! $model) {
             throw InvalidConfig::aiModelNotConfigured();
+        }
+
+        if (! is_string($model) && ! $model instanceof AiModel) {
+            throw InvalidConfig::invalidAiModel();
         }
 
         return $model;
