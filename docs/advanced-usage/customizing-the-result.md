@@ -5,7 +5,7 @@ weight: 3
 
 By default a transformer stores the AI's text response, or, for a [structured output](./structured-output) transformer, its structured JSON. You can change what gets stored by overriding the `resultFrom()` method on your transformer.
 
-`resultFrom()` receives the Laravel AI response and the `TransformationResult` model that is about to be saved. Whatever you return is stored in the `result` column.
+`resultFrom()` receives the Laravel AI response, and whatever you return is stored in the `result` column.
 
 ## Manipulating the response
 
@@ -13,7 +13,6 @@ Return a modified string to post-process the response before it is stored.
 
 ```php
 use Laravel\Ai\Responses\AgentResponse;
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
 use Stringable;
 
@@ -24,7 +23,7 @@ class SummaryTransformer extends Transformer
         return 'Summarize this webpage.';
     }
 
-    protected function resultFrom(AgentResponse $response, TransformationResult $transformationResult): string
+    protected function resultFrom(AgentResponse $response): string
     {
         return trim(strip_tags($response->text));
     }
@@ -33,14 +32,14 @@ class SummaryTransformer extends Transformer
 
 ## Saving extra data on the model
 
-The `$transformationResult` model passed to `resultFrom()` is the record that gets saved, so you can set additional attributes on it.
+The record that gets saved is available on the transformer as `$this->transformationResult`, so you can set additional attributes on it from within `resultFrom()`.
 
 ```php
-protected function resultFrom(AgentResponse $response, TransformationResult $transformationResult): string
+protected function resultFrom(AgentResponse $response): string
 {
     $summary = trim($response->text);
 
-    $transformationResult->word_count = str_word_count($summary);
+    $this->transformationResult->word_count = str_word_count($summary);
 
     return $summary;
 }
