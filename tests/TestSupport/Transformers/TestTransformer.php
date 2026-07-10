@@ -10,9 +10,4 @@ class TestTransformer extends Transformer
     {
         $this->transformationResult->result = 'test';
     }
-
-    public function getPrompt(): string
-    {
-        return 'Test prompt for '.$this->url;
-    }
 }

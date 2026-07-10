@@ -1,6 +1,6 @@
 <?php
 
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
@@ -35,21 +35,21 @@ return [
     'process_transformer_job' => ProcessTransformerJob::class,
 
     /*
-     * By default, the transformers that ship with this package leverage the wonderful
-     * Prism package to interact with various AI services.
+     * By default, the transformers that ship with this package leverage the official
+     * Laravel AI package to interact with various AI services.
      *
-     * https://prismphp.com
+     * https://github.com/laravel/ai
      *
      * You can customize the default settings here.
      */
     'ai' => [
         'default' => [
-            'provider' => Provider::OpenAI,
+            'provider' => Lab::OpenAI,
             'model' => 'gpt-4o-mini',
         ],
 
         'image' => [
-            'provider' => Provider::OpenAI,
+            'provider' => Lab::OpenAI,
             'model' => 'dall-e-3',
         ],
     ],

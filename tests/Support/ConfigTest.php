@@ -1,6 +1,6 @@
 <?php
 
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
@@ -58,15 +58,15 @@ it('throws an exception when model class does not exist', function () {
 it('can get the AI provider', function () {
     $provider = Config::aiProvider();
 
-    expect($provider)->toBe(Provider::OpenAI);
+    expect($provider)->toBe(Lab::OpenAI);
 });
 
 it('can get the AI provider for a specific config', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', Provider::Anthropic);
+    config()->set('url-ai-transformer.ai.custom.provider', Lab::Anthropic);
 
     $provider = Config::aiProvider('custom');
 
-    expect($provider)->toBe(Provider::Anthropic);
+    expect($provider)->toBe(Lab::Anthropic);
 });
 
 it('throws an exception when AI provider is not configured', function () {

@@ -3,23 +3,17 @@
 namespace Spatie\LaravelUrlAiTransformer\Transformers;
 
 use Illuminate\Support\Str;
-use Prism\Prism\Facades\Prism;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
+use Stringable;
 
 class LdJsonTransformer extends Transformer
 {
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        $response = Prism::text()
-            ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt($this->getPrompt())
-            ->asText();
-
-        $this->transformationResult->result = $response->text;
+        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. Make the snippet as complete as possible.';
     }
 
-    public function getPrompt(): string
+    public function content(): string
     {
-        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. Make the snippet as complete as possible. This is the content:'.Str::limit($this->urlContent, 6000);
+        return Str::limit($this->urlContent, 6000);
     }
 }

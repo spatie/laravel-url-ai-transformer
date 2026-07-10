@@ -3,8 +3,8 @@
 namespace Spatie\LaravelUrlAiTransformer\Tests\TestSupport;
 
 use Dotenv\Dotenv;
+use Laravel\Ai\AiServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Prism\Prism\PrismServiceProvider;
 use Spatie\LaravelUrlAiTransformer\UrlAiTransformerServiceProvider;
 
 class TestCase extends Orchestra
@@ -23,7 +23,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            PrismServiceProvider::class,
+            AiServiceProvider::class,
             UrlAiTransformerServiceProvider::class,
         ];
     }
@@ -43,7 +43,6 @@ class TestCase extends Orchestra
         $migration = include __DIR__.'/../../database/migrations/create_url_ai_transformer_table.php.stub';
         $migration->up();
 
-        config()->set('prism.providers.openai.api_key', env('OPENAI_API_KEY'));
-        config()->set('prism.providers.openai.url', env('OPENAI_API_URL', 'https://api.openai.com/v1'));
+        config()->set('ai.providers.openai.key', env('OPENAI_API_KEY'));
     }
 }

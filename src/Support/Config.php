@@ -3,7 +3,7 @@
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
 use Illuminate\Database\Eloquent\Model;
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 
@@ -65,7 +65,7 @@ class Config
         return $modelClass;
     }
 
-    public static function aiProvider(string $configName = 'default'): Provider
+    public static function aiProvider(string $configName = 'default'): Lab
     {
         $provider = config("url-ai-transformer.ai.{$configName}.provider");
 
@@ -73,7 +73,7 @@ class Config
             throw InvalidConfig::aiProviderNotConfigured($configName);
         }
 
-        if (! $provider instanceof Provider) {
+        if (! $provider instanceof Lab) {
             throw InvalidConfig::invalidAiProvider($configName);
         }
 
