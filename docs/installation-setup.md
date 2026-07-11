@@ -48,6 +48,7 @@ return [
      */
     'actions' => [
         'fetch_url_content' => Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction::class,
+        'prepare_url_content' => Spatie\LaravelUrlAiTransformer\Actions\PrepareUrlContentAction::class,
         'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,
     ],
 

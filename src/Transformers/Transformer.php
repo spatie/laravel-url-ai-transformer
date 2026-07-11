@@ -15,6 +15,7 @@ use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 use ReflectionAttribute;
 use ReflectionClass;
+use Spatie\LaravelUrlAiTransformer\Actions\PrepareUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Enums\Model as ModelPreference;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
@@ -48,9 +49,16 @@ abstract class Transformer implements Agent
         $this->transformationResult->result = $this->resultFrom($response);
     }
 
+    /**
+     * The content that gets sent to the AI. By default, the raw URL content is
+     * prepared by the action registered under the `prepare_url_content` config
+     * key. Override this method to control the content for a single transformer.
+     */
     public function content(): string
     {
-        return $this->urlContent;
+        $prepareUrlContentAction = Config::getAction('prepare_url_content', PrepareUrlContentAction::class);
+
+        return $prepareUrlContentAction->execute($this->urlContent);
     }
 
     /**

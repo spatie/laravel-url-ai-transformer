@@ -33,7 +33,13 @@ class SummaryTransformer extends Transformer
 }
 ```
 
-The base `Transformer` runs the AI call for you and stores the response on the transformation result. If you want to tweak the content that gets sent to the AI, override the `content()` method:
+The base `Transformer` runs the AI call for you and stores the response on the transformation result.
+
+## Customizing the content that is sent to the AI
+
+By default, the fetched URL content is cleaned up before it is sent to the AI: scripts and styles are removed, HTML tags are stripped, whitespace is collapsed, and the result is limited to 6000 characters. This work is done by the `PrepareUrlContentAction`, which you can [replace with your own action](../advanced-usage/overriding-actions) to change the behavior for all transformers.
+
+To tweak the content for a single transformer, override the `content()` method:
 
 ```php
 class SummaryTransformer extends Transformer
@@ -45,7 +51,7 @@ class SummaryTransformer extends Transformer
 
     public function content(): string
     {
-        return (string) str(strip_tags($this->urlContent))->limit(6000);
+        return (string) str(strip_tags($this->urlContent))->limit(1000);
     }
 }
 ```

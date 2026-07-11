@@ -2,6 +2,7 @@
 
 use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
+use Spatie\LaravelUrlAiTransformer\Actions\PrepareUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
 use Spatie\LaravelUrlAiTransformer\Enums\Model;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
@@ -35,6 +36,7 @@ return [
      */
     'actions' => [
         'fetch_url_content' => FetchUrlContentAction::class,
+        'prepare_url_content' => PrepareUrlContentAction::class,
         'process_registration' => ProcessRegistrationAction::class,
     ],
 
