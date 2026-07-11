@@ -1,6 +1,6 @@
 ---
 title: Testing transformers
-weight: 1
+weight: 13
 ---
 
 Testing transformers is fairly straightforward.

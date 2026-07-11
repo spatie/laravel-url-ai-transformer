@@ -1,9 +1,9 @@
 ---
 title: Overriding actions
-weight: 5
+weight: 12
 ---
 
-Actions are class that handle the core operations of the package. By overriding them, you can customize how low-level operations are performed.
+Actions are classes that handle the core operations of the package. By overriding them, you can customize how low-level operations are performed.
 
 ## Overriding the fetch action
 
@@ -21,15 +21,13 @@ class CustomFetchUrlContentAction extends FetchUrlContentAction
     public function execute(string $url): string
     {
         if (str_contains($url, 'api.mycompany.com')) {
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . config('services.internal_api.token'),
+            return Http::withHeaders([
+                'Authorization' => 'Bearer '.config('services.internal_api.token'),
                 'Accept' => 'application/json',
-            ])->get($url);
-            
-            return $response->body();
+            ])->get($url)->body();
         }
-        
-        parent::execute($url);
+
+        return parent::execute($url);
     }
 }
 ```

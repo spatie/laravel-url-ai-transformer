@@ -7,6 +7,14 @@ The real power of this package comes from writing your own transformers. Let's e
 
 ## Creating a basic transformer
 
+You can generate a transformer with the `make:transformer` command:
+
+```bash
+php artisan make:transformer SummaryTransformer
+```
+
+This creates a transformer class in `app/Transformers`.
+
 Every transformer is a [Laravel AI](https://github.com/laravel/ai) agent. Extend the `Transformer` base class and implement `instructions()`, which returns the AI instructions to follow. The fetched URL content is sent along automatically as the prompt.
 
 ```php
@@ -51,10 +59,9 @@ Transform::urls('https://example.com/article')
 
 When a transformer runs, it has access to three properties:
 
-- `$this->url` - The URL being transformed
-- `$this->urlContent` - The fetched content from the URL
-- `$this->transformationResult` - The database model where you store results
-
+- `$this->url`: the URL being transformed
+- `$this->urlContent`: the fetched content from the URL
+- `$this->transformationResult`: the database model where you store results
 
 ## Returning structured output
 

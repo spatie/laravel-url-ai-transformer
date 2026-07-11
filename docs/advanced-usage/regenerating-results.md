@@ -1,9 +1,9 @@
 ---
 title: Regenerating results
-weight: 5
+weight: 7
 ---
 
-Sometimes you need to regenerate transformation results - perhaps the content has changed, you've updated your transformer logic, or a previous transformation failed. The `TransformationResult` model provides two methods to handle this.
+Sometimes you need to regenerate transformation results, perhaps because the content has changed, you've updated your transformer logic, or a previous transformation failed. The `TransformationResult` model provides two methods to handle this.
 
 ## The regenerate method
 
@@ -12,12 +12,9 @@ The `regenerate()` method re-runs a transformation for a specific result by disp
 ```php
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
-$result = TransformationResult::where('url', 'https://example.com/blog/my-post')
-    ->where('type', 'ldJson')
-    ->first();
+$transformationResult = TransformationResult::findForUrl('https://example.com/blog/my-post', 'ldJson');
 
-// Queue the regeneration
-$result->regenerate();
+$transformationResult->regenerate();
 ```
 
 ## The regenerateNow method
@@ -25,6 +22,5 @@ $result->regenerate();
 For immediate regeneration without using the queue, use `regenerateNow()`:
 
 ```php
-// Regenerate immediately, blocking until complete
-$result->regenerateNow();
+$transformationResult->regenerateNow();
 ```

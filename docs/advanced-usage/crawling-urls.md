@@ -1,6 +1,6 @@
 ---
 title: Crawling URLs
-weight: 2
+weight: 5
 ---
 
 Instead of manually registering URLs, you can use the [spatie/crawler](https://github.com/spatie/crawler) package to crawl (parts of) your website.
@@ -17,11 +17,11 @@ use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
 
 class AiTransformerServiceProvider extends ServiceProvider
 {
-    public function register(): void
+    public function boot(): void
     {
         Transform::urls(
-            fn() => $this->crawlAllUrls()
-        )->usingTransformers(new LdJsonTransformer());
+            fn () => $this->crawlAllUrls()
+        )->usingTransformers(new LdJsonTransformer);
     }
 
     protected function crawlAllUrls(): array

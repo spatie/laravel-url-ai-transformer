@@ -1,6 +1,6 @@
 ---
 title: Customizing AI models
-weight: 3
+weight: 2
 ---
 
 By default, transformers use the AI provider and model configured in your `config/url-ai-transformer.php` file. However, you can customize AI options on a per-transformer basis, or even skip AI entirely.
@@ -99,8 +99,8 @@ class WordCountTransformer extends Transformer
     public function transform(): void
     {
         $wordCount = str_word_count(strip_tags($this->urlContent));
-        
-        $this->transformationResult->result =  $wordCount;
+
+        $this->transformationResult->result = (string) $wordCount;
     }
 }
 ```

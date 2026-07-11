@@ -1,6 +1,6 @@
 ---
 title: Structured output
-weight: 2
+weight: 1
 ---
 
 By default, a transformer stores the AI's free-form text response. When you need reliable, machine-readable data instead, a transformer can return structured output that is validated against a schema you define.

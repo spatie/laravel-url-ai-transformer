@@ -52,19 +52,18 @@ return [
     ],
 
     /*
-     * The jobs that will handle background processing.
+     * The job that will process transformations in the background.
      *
-     * You can extend the default jobs and specify your own jobs here
+     * You can extend the default job and specify your own job here
      * to customize the package's behavior.
      */
-
     'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
 ];
 ```
 
 ## Migrating the database
 
-This package stored transformations results in the database. To create the `transformation_results` table, you must create and run the migration.
+This package stores transformation results in the database. To create the `transformation_results` table, you must publish and run the migration.
 
 ```bash
 php artisan vendor:publish --tag="url-ai-transformer-migrations"
@@ -87,10 +86,8 @@ Laravel AI supports multiple providers including OpenAI, Anthropic Claude, Googl
 
 ```php
 'ai' => [
-    'default' => [
-        'provider' => Laravel\Ai\Enums\Lab::Anthropic,
-        'model' => 'claude-haiku-4-5-20251001',
-    ],
+    'provider' => Laravel\Ai\Enums\Lab::Anthropic,
+    'model' => 'claude-haiku-4-5-20251001',
 ],
 ```
 

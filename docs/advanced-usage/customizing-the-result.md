@@ -45,8 +45,8 @@ protected function resultFrom(AgentResponse $response): string
 }
 ```
 
-To persist extra columns like `word_count`, add them to a migration and point the package at your own model via the `model` config key.
+To persist extra columns like `word_count`, add them to a migration and point the package at [your own model](./using-your-own-model) via the `model` config key.
 
 ## Controlling persistence
 
-`resultFrom()` runs while the transformer is producing the result. If you need to change how results are persisted more broadly (for example, saving to another table, or running side effects), extend the process transformer job and register it with the `process_transformer_job` config key, or listen for the `TransformerEnded` event.
+`resultFrom()` runs while the transformer is producing the result. If you need to change how results are persisted more broadly (for example, saving to another table, or running side effects), [extend the process transformer job](./customizing-the-job) and register it with the `process_transformer_job` config key, or listen for the [`TransformerEnded` event](./events).

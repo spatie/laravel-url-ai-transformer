@@ -15,7 +15,7 @@
     
 </div>
 
-Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, create image, or apply custom AI transformations to web content - this package can do it.
+Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, or apply custom AI transformations to web content, this package can do it.
 
 The result of the transformation is stored in a database. You can retrieve the transformed content at any time.
 
@@ -42,8 +42,7 @@ After the transformation is complete, you can retrieve the transformed content u
 ```php
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
-$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post','ldJson'
-);
+$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post', 'ldJson');
 ```
 
 ## Support us

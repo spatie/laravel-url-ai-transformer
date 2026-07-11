@@ -39,11 +39,10 @@ return [
     ],
 
     /*
-     * The jobs that will handle background processing.
+     * The job that will process transformations in the background.
      *
-     * You can extend the default jobs and specify your own jobs here
+     * You can extend the default job and specify your own job here
      * to customize the package's behavior.
      */
-
     'process_transformer_job' => ProcessTransformerJob::class,
 ];
