@@ -2,13 +2,23 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Models;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\RegisteredTransformations;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Throwable;
 
+/**
+ * @property string $url
+ * @property string $type
+ * @property ?string $result
+ * @property ?Carbon $successfully_completed_at
+ * @property ?Carbon $latest_exception_seen_at
+ * @property ?string $latest_exception_message
+ * @property ?string $latest_exception_trace
+ */
 class TransformationResult extends Model
 {
     protected $guarded = [];
@@ -21,22 +31,45 @@ class TransformationResult extends Model
     public static function findOrCreateForRegistration(
         string $url,
         Transformer $transformer,
-    ): self {
-        return self::firstOrCreate([
+    ): static {
+        return static::query()->firstOrCreate([
             'url' => $url,
             'type' => $transformer->type(),
         ]);
     }
 
+    /**
+     * @param  string|class-string<Transformer>  $type
+     */
     public static function forUrl(string $url, string $type): ?string
     {
-        return self::query()
-            ->where('url', $url)
-            ->where('type', $type)
-            ->first()?->result;
+        return static::findForUrl($url, $type)?->result;
     }
 
-    public function recordException(Exception $exception): void
+    /**
+     * @param  string|class-string<Transformer>  $type
+     */
+    public static function findForUrl(string $url, string $type): ?static
+    {
+        return static::query()
+            ->where('url', $url)
+            ->where('type', static::normalizeType($type))
+            ->first();
+    }
+
+    /**
+     * @param  string|class-string<Transformer>  $type
+     */
+    protected static function normalizeType(string $type): string
+    {
+        if (is_a($type, Transformer::class, true)) {
+            return app($type)->type();
+        }
+
+        return $type;
+    }
+
+    public function recordException(Throwable $exception): void
     {
         $this->update([
             'latest_exception_seen_at' => now(),
@@ -58,7 +91,17 @@ class TransformationResult extends Model
         return $this;
     }
 
-    public function regenerate(bool $now = false): void
+    public function regenerate(): void
+    {
+        $this->dispatchRegeneration(now: false);
+    }
+
+    public function regenerateNow(): void
+    {
+        $this->dispatchRegeneration(now: true);
+    }
+
+    protected function dispatchRegeneration(bool $now): void
     {
         $transformerClass = app(RegisteredTransformations::class)->getTransformationClassForType($this->type);
 
@@ -73,10 +116,5 @@ class TransformationResult extends Model
             : 'dispatch';
 
         $jobClass::$method($transformerClass, $this->url, $urlContent);
-    }
-
-    public function regenerateNow(): void
-    {
-        $this->regenerate(true);
     }
 }

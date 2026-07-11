@@ -2,16 +2,16 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Enums\Model as AiModel;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
 class Config
 {
     /**
-     * @template T
+     * @template T of object
      *
      * @param  class-string<T>  $mustBeOrExtend
      * @return class-string<T>
@@ -36,7 +36,7 @@ class Config
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param  class-string<T>  $mustBeOrExtend
      * @return T
@@ -49,7 +49,7 @@ class Config
     }
 
     /**
-     * @return class-string<Model>
+     * @return class-string<TransformationResult>
      */
     public static function model(): string
     {
@@ -61,6 +61,10 @@ class Config
 
         if (! class_exists($modelClass)) {
             throw InvalidConfig::modelClassDoesNotExist($modelClass);
+        }
+
+        if (! is_a($modelClass, TransformationResult::class, true)) {
+            throw InvalidConfig::modelClassDoesNotExtend($modelClass, TransformationResult::class);
         }
 
         return $modelClass;
@@ -102,6 +106,14 @@ class Config
     public static function getProcessTransformationJobClass(): string
     {
         $jobClass = config('url-ai-transformer.process_transformer_job');
+
+        if (! $jobClass) {
+            throw InvalidConfig::jobClassNotConfigured();
+        }
+
+        if (! class_exists($jobClass)) {
+            throw InvalidConfig::jobClassDoesNotExist($jobClass);
+        }
 
         if (! is_a($jobClass, ProcessTransformerJob::class, true)) {
             throw InvalidConfig::jobClassDoesNotExtend($jobClass, ProcessTransformerJob::class);

@@ -2,11 +2,11 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Events;
 
-use Exception;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Throwable;
 
 class TransformerFailed
 {
@@ -15,6 +15,6 @@ class TransformerFailed
     public function __construct(
         public Transformer $transformer,
         public TransformationResult $transformationResult,
-        public Exception $exception,
+        public Throwable $exception,
     ) {}
 }

@@ -28,6 +28,11 @@ class InvalidConfig extends Exception
         return new self("Model class '{$modelClass}' does not exist");
     }
 
+    public static function modelClassDoesNotExtend(string $modelClass, string $mustBeOrExtend): self
+    {
+        return new self("Model class '{$modelClass}' must be or extend '{$mustBeOrExtend}'");
+    }
+
     public static function aiProviderNotConfigured(): self
     {
         return new self('AI provider not configured. Set the `ai.provider` key in the config file.');
@@ -53,9 +58,9 @@ class InvalidConfig extends Exception
         return new self("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
     }
 
-    public static function jobKeyNotFound(string $jobName): self
+    public static function jobClassNotConfigured(): self
     {
-        return new self("There is no job with name `{$jobName}` configured in the `jobs` key of the config file.");
+        return new self('Job class not configured. Set the `process_transformer_job` key in the config file.');
     }
 
     public static function jobClassDoesNotExist(string $jobClass): self

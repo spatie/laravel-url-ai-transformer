@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
@@ -192,4 +193,34 @@ it('runs transformations immediately when using --now option', function () {
         ->first();
 
     expect($transformationResult->successfully_completed_at)->not->toBeNull();
+});
+
+it('accepts filter values when invoked with string input like the real CLI', function () {
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(new DummyLdTransformer);
+    Transform::urls('https://spatie.be')->usingTransformers(new TestTransformer);
+
+    Artisan::call('transform-urls --url=https://example.com --transformer=ld');
+
+    expect(TransformationResult::forUrl('https://example.com', 'ld'))->toBe('dummy result');
+    expect(TransformationResult::forUrl('https://spatie.be', 'test'))->toBeNull();
+});
+
+it('reports how many transformer jobs were dispatched', function () {
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(
+        new DummyLdTransformer,
+        new TestTransformer,
+    );
+
+    $this
+        ->artisan(TransformUrlsCommand::class)
+        ->expectsOutputToContain('Dispatched 2 transformer job(s)')
+        ->assertSuccessful();
 });

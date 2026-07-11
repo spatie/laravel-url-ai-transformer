@@ -6,8 +6,8 @@ use Exception;
 
 class CouldNotFindTransformer extends Exception
 {
-    public static function make(string $type): static
+    public static function make(string $type): self
     {
-        return new static("No transformer found for type: {$type}");
+        return new self("No transformer found for type: {$type}");
     }
 }
