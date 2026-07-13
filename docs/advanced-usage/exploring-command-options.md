@@ -1,6 +1,6 @@
 ---
 title: Exploring command options
-weight: 4
+weight: 6
 ---
 
 The `transform-urls` command processes all registered URL transformations and stores the results in your database.

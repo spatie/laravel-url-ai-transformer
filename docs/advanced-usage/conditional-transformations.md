@@ -1,6 +1,6 @@
 ---
 title: Conditional transformations
-weight: 2
+weight: 4
 ---
 
 Sometimes you don't want transformers to run every time the command is executed. The `shouldRun()` method allows you to add conditions that determine when a transformer should process content.
@@ -14,23 +14,26 @@ class MonthlyReportTransformer extends Transformer
 {
     public function shouldRun(): bool
     {
-        // Run if we've never transformed or if it's been more than 30 days
-        return $this
-            ->transformationResult
-            ->successfully_completed_at?
-            ->diffInDays() > 30 ?? true;
+        $completedAt = $this->transformationResult->successfully_completed_at;
+
+        if (! $completedAt) {
+            return true;
+        }
+
+        return $completedAt->diffInDays() > 30;
     }
 
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        // Your transformation logic
-    }
-
-    public function getPrompt(): string
-    {
-        return "Generate a monthly report summary...";
+        return 'Generate a monthly report summary...';
     }
 }
 ```
 
-This example only runs the transformation if it hasn't been successfully completed in the last 30 days.
+This example only runs the transformation when it has never completed before, or when the last successful run was more than 30 days ago.
+
+You can force skipped transformers to run anyway with the `--force` option:
+
+```bash
+php artisan transform-urls --force
+```

@@ -1,6 +1,7 @@
 <?php
 
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
@@ -58,45 +59,53 @@ it('throws an exception when model class does not exist', function () {
 it('can get the AI provider', function () {
     $provider = Config::aiProvider();
 
-    expect($provider)->toBe(Provider::OpenAI);
+    expect($provider)->toBe(Lab::OpenAI);
 });
 
-it('can get the AI provider for a specific config', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', Provider::Anthropic);
+it('can get a custom configured AI provider', function () {
+    config()->set('url-ai-transformer.ai.provider', Lab::Anthropic);
 
-    $provider = Config::aiProvider('custom');
-
-    expect($provider)->toBe(Provider::Anthropic);
+    expect(Config::aiProvider())->toBe(Lab::Anthropic);
 });
 
 it('throws an exception when AI provider is not configured', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', null);
+    config()->set('url-ai-transformer.ai.provider', null);
 
-    Config::aiProvider('custom');
+    Config::aiProvider();
 })->throws(InvalidConfig::class);
 
 it('throws an exception when AI provider is invalid', function () {
-    config()->set('url-ai-transformer.ai.custom.provider', 'invalid_provider');
+    config()->set('url-ai-transformer.ai.provider', 'invalid_provider');
 
-    Config::aiProvider('custom');
+    Config::aiProvider();
 })->throws(InvalidConfig::class);
 
 it('can get the AI model', function () {
     $model = Config::aiModel();
 
-    expect($model)->toBe('gpt-4o-mini');
+    expect($model)->toBe(Model::Cheapest);
 });
 
-it('can get the AI model for a specific config', function () {
-    config()->set('url-ai-transformer.ai.custom.model', 'custom-model');
+it('can get a custom configured AI model', function () {
+    config()->set('url-ai-transformer.ai.model', 'custom-model');
 
-    $model = Config::aiModel('custom');
+    expect(Config::aiModel())->toBe('custom-model');
+});
 
-    expect($model)->toBe('custom-model');
+it('can get a Model enum as the AI model', function () {
+    config()->set('url-ai-transformer.ai.model', Model::Cheapest);
+
+    expect(Config::aiModel())->toBe(Model::Cheapest);
 });
 
 it('throws an exception when AI model is not configured', function () {
-    config()->set('url-ai-transformer.ai.custom.model', null);
+    config()->set('url-ai-transformer.ai.model', null);
 
-    Config::aiModel('custom');
+    Config::aiModel();
+})->throws(InvalidConfig::class);
+
+it('throws an exception when the AI model is an invalid type', function () {
+    config()->set('url-ai-transformer.ai.model', ['not', 'a', 'model']);
+
+    Config::aiModel();
 })->throws(InvalidConfig::class);

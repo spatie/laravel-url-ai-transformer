@@ -11,11 +11,6 @@ class DummyLdTransformer extends Transformer
         $this->transformationResult->result = 'dummy result';
     }
 
-    public function getPrompt(): string
-    {
-        return 'dummy prompt';
-    }
-
     public function type(): string
     {
         return 'ld';

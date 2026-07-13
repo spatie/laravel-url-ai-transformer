@@ -15,11 +15,29 @@ class TransformationRegistration
         protected array $urls,
     ) {}
 
-    public function usingTransformers(Transformer ...$transformers): self
+    /**
+     * @param  Transformer|class-string<Transformer>  ...$transformers
+     */
+    public function usingTransformers(Transformer|string ...$transformers): self
     {
-        $this->transformers = $transformers;
+        $this->transformers = array_map(
+            fn (Transformer|string $transformer) => $this->resolveTransformer($transformer),
+            $transformers,
+        );
 
         return $this;
+    }
+
+    /**
+     * @param  Transformer|class-string<Transformer>  $transformer
+     */
+    protected function resolveTransformer(Transformer|string $transformer): Transformer
+    {
+        if ($transformer instanceof Transformer) {
+            return $transformer;
+        }
+
+        return app($transformer);
     }
 
     public function getUrls(): Generator

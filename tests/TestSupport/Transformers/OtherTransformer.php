@@ -10,9 +10,4 @@ class OtherTransformer extends Transformer
     {
         $this->transformationResult->result = 'other';
     }
-
-    public function getPrompt(): string
-    {
-        return 'Other prompt for '.$this->url;
-    }
 }

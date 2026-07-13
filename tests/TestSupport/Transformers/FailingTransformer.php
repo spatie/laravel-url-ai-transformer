@@ -11,9 +11,4 @@ class FailingTransformer extends Transformer
     {
         throw new Exception('Transformer failed to process content');
     }
-
-    public function getPrompt(): string
-    {
-        return 'This prompt will cause failure';
-    }
 }

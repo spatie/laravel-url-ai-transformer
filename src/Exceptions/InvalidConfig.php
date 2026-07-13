@@ -3,6 +3,8 @@
 namespace Spatie\LaravelUrlAiTransformer\Exceptions;
 
 use Exception;
+use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 
 class InvalidConfig extends Exception
 {
@@ -26,19 +28,29 @@ class InvalidConfig extends Exception
         return new self("Model class '{$modelClass}' does not exist");
     }
 
-    public static function aiProviderNotConfigured(string $configName): self
+    public static function modelClassDoesNotExtend(string $modelClass, string $mustBeOrExtend): self
     {
-        return new self("AI provider not configured for '{$configName}'");
+        return new self("Model class '{$modelClass}' must be or extend '{$mustBeOrExtend}'");
     }
 
-    public static function invalidAiProvider(string $configName): self
+    public static function aiProviderNotConfigured(): self
     {
-        return new self("Invalid AI provider configured for '{$configName}'");
+        return new self('AI provider not configured. Set the `ai.provider` key in the config file.');
     }
 
-    public static function aiModelNotConfigured(string $configName): self
+    public static function invalidAiProvider(): self
     {
-        return new self("AI model not configured for '{$configName}'");
+        return new self('Invalid AI provider configured. The `ai.provider` key must be a '.Lab::class.' enum.');
+    }
+
+    public static function aiModelNotConfigured(): self
+    {
+        return new self('AI model not configured. Set the `ai.model` key in the config file.');
+    }
+
+    public static function invalidAiModel(): self
+    {
+        return new self('Invalid AI model configured. The `ai.model` key must be a string or a '.Model::class.' enum.');
     }
 
     public static function actionClassDoesNotExtend(string $actionClass, string $mustBeOrExtend): self
@@ -46,9 +58,9 @@ class InvalidConfig extends Exception
         return new self("Action class '{$actionClass}' must be or extend '{$mustBeOrExtend}'");
     }
 
-    public static function jobKeyNotFound(string $jobName): self
+    public static function jobClassNotConfigured(): self
     {
-        return new self("There is no job with name `{$jobName}` configured in the `jobs` key of the config file.");
+        return new self('Job class not configured. Set the `process_transformer_job` key in the config file.');
     }
 
     public static function jobClassDoesNotExist(string $jobClass): self

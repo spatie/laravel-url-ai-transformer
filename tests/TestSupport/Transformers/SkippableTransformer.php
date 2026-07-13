@@ -11,11 +11,6 @@ class SkippableTransformer extends Transformer
         $this->transformationResult->result = 'should not be set';
     }
 
-    public function getPrompt(): string
-    {
-        return 'This prompt should not be used';
-    }
-
     public function shouldRun(): bool
     {
         return false;

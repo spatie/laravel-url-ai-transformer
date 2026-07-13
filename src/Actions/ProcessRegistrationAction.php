@@ -2,13 +2,13 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Actions;
 
-use Exception;
 use Illuminate\Support\Collection;
 use Spatie\LaravelUrlAiTransformer\Events\TransformerFailed;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Support\TransformationRegistration;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Throwable;
 
 class ProcessRegistrationAction
 {
@@ -18,41 +18,56 @@ class ProcessRegistrationAction
         ?string $transformerFilter,
         bool $force,
         bool $now,
-    ): void {
-
+    ): int {
         $transformers = $registration->getTransformers();
 
         if ($transformerFilter) {
             $transformers = $transformers->filter(fn (Transformer $transformer) => fnmatch($transformerFilter, $transformer->type()));
         }
 
+        $dispatchedJobCount = 0;
+
         foreach ($registration->getUrls() as $url) {
-            if ($urlFilter && fnmatch($urlFilter, $url) === false) {
-                continue;
+            if ($urlFilter) {
+                if (! fnmatch($urlFilter, $url)) {
+                    continue;
+                }
             }
-            $this->processUrl($url, $registration, $transformers, $force, $now);
+
+            $dispatchedJobCount += $this->processUrl($url, $transformers, $force, $now);
         }
+
+        return $dispatchedJobCount;
     }
 
+    /**
+     * @param  Collection<int, Transformer>  $transformers
+     */
     protected function processUrl(
         string $url,
-        TransformationRegistration $registration,
         Collection $transformers,
         bool $force,
         bool $now,
-    ): void {
+    ): int {
         try {
-
             $urlContent = $this->fetchUrlContent($url);
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             $this->recordExceptionForAllTransformers($url, $transformers, $exception);
 
-            return;
+            return 0;
         }
 
+        $dispatchedJobCount = 0;
+
         foreach ($transformers as $transformer) {
-            $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now);
+            if (! $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now)) {
+                continue;
+            }
+
+            $dispatchedJobCount++;
         }
+
+        return $dispatchedJobCount;
     }
 
     protected function fetchUrlContent(string $url): string
@@ -69,7 +84,7 @@ class ProcessRegistrationAction
         string $urlContent,
         bool $force,
         bool $now,
-    ): void {
+    ): bool {
         $processTransformationJob = Config::getProcessTransformationJobClass();
 
         $dispatchMethod = $now
@@ -78,8 +93,12 @@ class ProcessRegistrationAction
 
         try {
             $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
-        } catch (Exception $exception) {
+
+            return true;
+        } catch (Throwable $exception) {
             report($exception);
+
+            return false;
         }
     }
 
@@ -92,10 +111,13 @@ class ProcessRegistrationAction
         return $model::findOrCreateForRegistration($url, $transformer);
     }
 
+    /**
+     * @param  Collection<int, Transformer>  $transformers
+     */
     protected function recordExceptionForAllTransformers(
         string $url,
         Collection $transformers,
-        Exception $exception,
+        Throwable $exception,
     ): void {
         foreach ($transformers as $transformer) {
             $transformationResult = $this->getTransformationResult($url, $transformer);

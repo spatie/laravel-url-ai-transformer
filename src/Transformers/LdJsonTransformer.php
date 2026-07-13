@@ -2,24 +2,37 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Transformers;
 
-use Illuminate\Support\Str;
-use Prism\Prism\Facades\Prism;
-use Spatie\LaravelUrlAiTransformer\Support\Config;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\JsonSchema\Types\Type;
+use Laravel\Ai\Contracts\HasStructuredOutput;
+use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\StructuredAgentResponse;
+use Stringable;
 
-class LdJsonTransformer extends Transformer
+class LdJsonTransformer extends Transformer implements HasStructuredOutput
 {
-    public function transform(): void
+    public function instructions(): Stringable|string
     {
-        $response = Prism::text()
-            ->using(Config::aiProvider(), Config::aiModel())
-            ->withPrompt($this->getPrompt())
-            ->asText();
-
-        $this->transformationResult->result = $response->text;
+        return 'Summarize the following webpage to ld+json. Use the schema.org types and properties that fit the content best, and make the snippet as complete as possible. Put the ld+json in the `json` key.';
     }
 
-    public function getPrompt(): string
+    /** @return array<string, Type> */
+    public function schema(JsonSchema $schema): array
     {
-        return 'Summarize the following webpage to ld+json. Only return valid json, no backtick openings. Make the snippet as complete as possible. This is the content:'.Str::limit($this->urlContent, 6000);
+        return [
+            'json' => $schema->string()->required(),
+        ];
+    }
+
+    protected function resultFrom(AgentResponse $response): string
+    {
+        $json = $response instanceof StructuredAgentResponse
+            ? $response['json']
+            : $response->text;
+
+        // The schema validates the outer response; this validates its flexible JSON payload.
+        json_decode($json, flags: JSON_THROW_ON_ERROR);
+
+        return $json;
     }
 }

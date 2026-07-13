@@ -7,7 +7,6 @@ Let's build a simple example that transforms blog posts into structured data. We
 
 First, you should use the `Transform` class to register URLs to transform, and which transformer to use:
 
-
 ```php
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
 use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
@@ -17,7 +16,7 @@ Transform::urls(
     'https://spatie.be/blog',
     'https://spatie.be/open-source',
     'https://spatie.be/about-us'
-)->usingTransformers(new LdJsonTransformer)
+)->usingTransformers(new LdJsonTransformer);
 ```
 
 ## Running transformations
@@ -28,18 +27,28 @@ Now, you can transform the URLs by running:
 php artisan transform-urls
 ```
 
-This command will dispatch a queued job for each URL. Inside that queued job:
+The command fetches each URL once and then dispatches a queued job for every transformer registered for that URL. Each queued job prepares the fetched content, sends it to the configured AI, and stores the response in the `transformation_results` table.
 
-- the content of the URL will be fetched.
-- the content will be sent to the configured AI.
-- the response from the AI will be stored in the `transformation_results` table.
+Start a queue worker to process those jobs:
+
+```bash
+php artisan queue:work
+```
+
+URL fetching happens synchronously while `transform-urls` is running. The AI transformations run on the queue, so retry, backoff, and queue middleware settings apply to the transformation itself.
+
+During local development, or whenever you intentionally want to wait for all transformations, use `--now` to run every transformation job synchronously:
+
+```bash
+php artisan transform-urls --now
+```
 
 ## What's in the database?
 
 The `transformation_results` table stores all transformation data with the following fields:
 
 - url: The URL that was transformed
-- type: The transformer type (e.g., 'ldJson', 'image')
+- type: The transformer type (e.g., 'ldJson', 'summary')
 - result: The AI-generated content stored as text
 - successfully_completed_at: Timestamp when the transformation completed successfully
 - latest_exception_seen_at: Timestamp of the most recent error (if any)
@@ -61,20 +70,27 @@ use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 $ldJsonData = TransformationResult::forUrl('https://spatie.be/blog', 'ldJson');
 ```
 
-The first parameter is the URL, the second parameter is the transformer type. By default, transformer type is the lowercased class name of the transformer without the `Transformer` suffix.
+The first parameter is the URL, the second parameter is the transformer type. By default, the transformer type is the camelCased class name of the transformer without the `Transformer` suffix. You can also pass the transformer class name instead of the type.
+
+```php
+$ldJsonData = TransformationResult::forUrl('https://spatie.be/blog', LdJsonTransformer::class);
+```
+
+If you need the underlying model instead of just the result, use `findForUrl()`:
+
+```php
+$transformationResult = TransformationResult::findForUrl('https://spatie.be/blog', 'ldJson');
+
+$transformationResult->successfully_completed_at; // when the transformation last completed
+```
 
 ## Scheduling transformations
 
 To keep your transformations up to date, schedule the command to run periodically:
 
 ```php
-// In app/Console/Kernel.php
-protected function schedule(Schedule $schedule)
-{
-    $schedule->command('transform-urls')
-        ->daily()
-        ->at('02:00');
-}
+// In routes/console.php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('transform-urls')->dailyAt('02:00');
 ```
-
-

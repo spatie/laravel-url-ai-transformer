@@ -37,9 +37,16 @@ You can also register multiple transformers at once:
 Transform::urls('https://example.com/product')
     ->usingTransformers(
         new LdJsonTransformer,
-        new ImageTransformer,
+        new SeoTitleTransformer,
         new SummaryTransformer,
     );
+```
+
+Instead of instances, you can pass transformer class names. They will be resolved through the container, so their constructors can use dependency injection.
+
+```php
+Transform::urls('https://example.com/product')
+    ->usingTransformers(LdJsonTransformer::class, SummaryTransformer::class);
 ```
 
 ## Where to register transformations

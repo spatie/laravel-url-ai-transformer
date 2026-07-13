@@ -2,7 +2,6 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Jobs;
 
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,6 +13,7 @@ use Spatie\LaravelUrlAiTransformer\Events\TransformerStarted;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Config;
 use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Throwable;
 
 class ProcessTransformerJob implements ShouldQueue
 {
@@ -31,18 +31,18 @@ class ProcessTransformerJob implements ShouldQueue
 
     public function handle(): void
     {
-        $transformer = new $this->transformerClass;
+        $transformer = app($this->transformerClass);
 
         try {
             $this->processTransformer($transformer);
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             $transformationResult = $this->getTransformationResult($transformer);
 
             $transformationResult->recordException($exception);
 
-            report($exception);
-
             event(new TransformerFailed($transformer, $transformationResult, $exception));
+
+            throw $exception;
         }
     }
 

@@ -2,7 +2,7 @@
     <a href="https://spatie.be/open-source?utm_source=github&utm_medium=banner&utm_campaign=laravel-url-ai-transformer">
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="https://spatie.be/packages/header/laravel-url-ai-transformer/html/dark.webp?1756452689">
-        <img alt="Logo for laravel-permission" src="https://spatie.be/packages/header/laravel-url-ai-transformer/html/light.webp?1756452689">
+        <img alt="Logo for laravel-url-ai-transformer" src="https://spatie.be/packages/header/laravel-url-ai-transformer/html/light.webp?1756452689">
       </picture>
     </a>
 
@@ -15,7 +15,9 @@
     
 </div>
 
-Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, create image, or apply custom AI transformations to web content - this package can do it.
+Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, or apply custom AI transformations to web content, this package can do it.
+
+Upgrading from v1? Read [UPGRADE.md](UPGRADE.md) before updating.
 
 The result of the transformation is stored in a database. You can retrieve the transformed content at any time.
 
@@ -29,7 +31,7 @@ Transform::urls('https://example.com/blog/my-post')
     ->usingTransformers(new LdJsonTransformer);
 ```
 
-A transformer is a class where you can configure the AI transformation, and specify the prompt to use.
+A transformer is a [Laravel AI](https://github.com/laravel/ai) agent. You specify the AI instructions to follow, and optionally the content that gets sent along.
 
 The configured transformation can be run using the `transform-urls` command.
 
@@ -42,8 +44,7 @@ After the transformation is complete, you can retrieve the transformed content u
 ```php
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
-$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post','ldJson'
-);
+$structuredData = TransformationResult::forUrl('https://example.com/blog/my-post', 'ldJson');
 ```
 
 ## Support us

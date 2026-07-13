@@ -128,3 +128,12 @@ it('handles mixed URL types without conversion', function () {
 
     expect($urls)->toBe(['https://example.com/path', '/local-path', 'relative-path']);
 });
+
+it('can register transformers using class names', function () {
+    Transform::urls('https://example.com/')
+        ->usingTransformers(TestTransformer::class);
+
+    $registration = app(RegisteredTransformations::class)->all()[0];
+
+    expect($registration->getTransformers()[0])->toBeInstanceOf(TestTransformer::class);
+});

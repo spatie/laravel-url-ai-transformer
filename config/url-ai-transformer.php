@@ -1,12 +1,26 @@
 <?php
 
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
 use Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction;
+use Spatie\LaravelUrlAiTransformer\Actions\PrepareUrlContentAction;
 use Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction;
+use Spatie\LaravelUrlAiTransformer\Enums\Model;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
 return [
+    /*
+     * The default AI provider and model that transformers use. The model may be
+     * a plain string, or Model::Cheapest / Model::Smartest.
+     *
+     * Transformers can override these defaults. Learn how in the docs:
+     * https://spatie.be/docs/laravel-url-ai-transformer/advanced-usage/customizing-ai-models
+     */
+    'ai' => [
+        'provider' => Lab::OpenAI,
+        'model' => Model::Cheapest,
+    ],
+
     /*
      * The model that will be used to store the transformation results.
      *
@@ -22,35 +36,15 @@ return [
      */
     'actions' => [
         'fetch_url_content' => FetchUrlContentAction::class,
+        'prepare_url_content' => PrepareUrlContentAction::class,
         'process_registration' => ProcessRegistrationAction::class,
     ],
 
     /*
-     * The jobs that will handle background processing.
+     * The job that will process transformations in the background.
      *
-     * You can extend the default jobs and specify your own jobs here
+     * You can extend the default job and specify your own job here
      * to customize the package's behavior.
      */
-
     'process_transformer_job' => ProcessTransformerJob::class,
-
-    /*
-     * By default, the transformers that ship with this package leverage the wonderful
-     * Prism package to interact with various AI services.
-     *
-     * https://prismphp.com
-     *
-     * You can customize the default settings here.
-     */
-    'ai' => [
-        'default' => [
-            'provider' => Provider::OpenAI,
-            'model' => 'gpt-4o-mini',
-        ],
-
-        'image' => [
-            'provider' => Provider::OpenAI,
-            'model' => 'dall-e-3',
-        ],
-    ],
 ];

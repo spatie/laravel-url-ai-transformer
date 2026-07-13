@@ -2,15 +2,16 @@
 
 namespace Spatie\LaravelUrlAiTransformer\Support;
 
-use Illuminate\Database\Eloquent\Model;
-use Prism\Prism\Enums\Provider;
+use Laravel\Ai\Enums\Lab;
+use Spatie\LaravelUrlAiTransformer\Enums\Model as AiModel;
 use Spatie\LaravelUrlAiTransformer\Exceptions\InvalidConfig;
 use Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 
 class Config
 {
     /**
-     * @template T
+     * @template T of object
      *
      * @param  class-string<T>  $mustBeOrExtend
      * @return class-string<T>
@@ -35,7 +36,7 @@ class Config
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param  class-string<T>  $mustBeOrExtend
      * @return T
@@ -48,7 +49,7 @@ class Config
     }
 
     /**
-     * @return class-string<Model>
+     * @return class-string<TransformationResult>
      */
     public static function model(): string
     {
@@ -62,30 +63,38 @@ class Config
             throw InvalidConfig::modelClassDoesNotExist($modelClass);
         }
 
+        if (! is_a($modelClass, TransformationResult::class, true)) {
+            throw InvalidConfig::modelClassDoesNotExtend($modelClass, TransformationResult::class);
+        }
+
         return $modelClass;
     }
 
-    public static function aiProvider(string $configName = 'default'): Provider
+    public static function aiProvider(): Lab
     {
-        $provider = config("url-ai-transformer.ai.{$configName}.provider");
+        $provider = config('url-ai-transformer.ai.provider');
 
         if (! $provider) {
-            throw InvalidConfig::aiProviderNotConfigured($configName);
+            throw InvalidConfig::aiProviderNotConfigured();
         }
 
-        if (! $provider instanceof Provider) {
-            throw InvalidConfig::invalidAiProvider($configName);
+        if (! $provider instanceof Lab) {
+            throw InvalidConfig::invalidAiProvider();
         }
 
         return $provider;
     }
 
-    public static function aiModel(string $configName = 'default'): string
+    public static function aiModel(): string|AiModel
     {
-        $model = config("url-ai-transformer.ai.{$configName}.model");
+        $model = config('url-ai-transformer.ai.model');
 
         if (! $model) {
-            throw InvalidConfig::aiModelNotConfigured($configName);
+            throw InvalidConfig::aiModelNotConfigured();
+        }
+
+        if (! is_string($model) && ! $model instanceof AiModel) {
+            throw InvalidConfig::invalidAiModel();
         }
 
         return $model;
@@ -97,6 +106,14 @@ class Config
     public static function getProcessTransformationJobClass(): string
     {
         $jobClass = config('url-ai-transformer.process_transformer_job');
+
+        if (! $jobClass) {
+            throw InvalidConfig::jobClassNotConfigured();
+        }
+
+        if (! class_exists($jobClass)) {
+            throw InvalidConfig::jobClassDoesNotExist($jobClass);
+        }
 
         if (! is_a($jobClass, ProcessTransformerJob::class, true)) {
             throw InvalidConfig::jobClassDoesNotExtend($jobClass, ProcessTransformerJob::class);

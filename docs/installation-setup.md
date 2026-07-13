@@ -9,6 +9,8 @@ You can install the package via composer:
 composer require spatie/laravel-url-ai-transformer
 ```
 
+Upgrading from v1? Follow the [upgrade guide](https://github.com/spatie/laravel-url-ai-transformer/blob/main/UPGRADE.md) before updating the package.
+
 ## Publishing the config file
 
 Optionally, you can publish the config file with this command:
@@ -21,6 +23,18 @@ This is the content of the published config file:
 
 ```php
 return [
+    /*
+     * The default AI provider and model that transformers use. The model may be
+     * a plain string, or Model::Cheapest / Model::Smartest.
+     *
+     * Transformers can override these defaults. Learn how in the docs:
+     * https://spatie.be/docs/laravel-url-ai-transformer/advanced-usage/customizing-ai-models
+     */
+    'ai' => [
+        'provider' => Laravel\Ai\Enums\Lab::OpenAI,
+        'model' => Spatie\LaravelUrlAiTransformer\Enums\Model::Cheapest,
+    ],
+
     /*
      * The model that will be used to store the transformation results.
      *
@@ -36,43 +50,23 @@ return [
      */
     'actions' => [
         'fetch_url_content' => Spatie\LaravelUrlAiTransformer\Actions\FetchUrlContentAction::class,
+        'prepare_url_content' => Spatie\LaravelUrlAiTransformer\Actions\PrepareUrlContentAction::class,
         'process_registration' => Spatie\LaravelUrlAiTransformer\Actions\ProcessRegistrationAction::class,
     ],
 
     /*
-     * The jobs that will handle background processing.
+     * The job that will process transformations in the background.
      *
-     * You can extend the default jobs and specify your own jobs here
+     * You can extend the default job and specify your own job here
      * to customize the package's behavior.
      */
-
     'process_transformer_job' => Spatie\LaravelUrlAiTransformer\Jobs\ProcessTransformerJob::class,
-
-    /*
-     * By default, the transformers that ship with this package leverage the wonderful
-     * Prism package to interact with various AI services.
-     *
-     * https://prismphp.com
-     *
-     * You can customize the default settings here.
-     */
-    'ai' => [
-        'default' => [
-            'provider' => Prism\Prism\Enums\Provider::OpenAI,
-            'model' => 'gpt-4o-mini',
-        ],
-
-        'image' => [
-            'provider' => Prism\Prism\Enums\Provider::OpenAI,
-            'model' => 'dall-e-3',
-        ],
-    ],
 ];
 ```
 
 ## Migrating the database
 
-This package stored transformations results in the database. To create the `transformation_results` table, you must create and run the migration.
+This package stores transformation results in the database. To create the `transformation_results` table, you must publish and run the migration.
 
 ```bash
 php artisan vendor:publish --tag="url-ai-transformer-migrations"
@@ -81,9 +75,9 @@ php artisan migrate
 
 ## Configuring AI providers
 
-This package uses [Prism](https://prismphp.com) under the hood to interact with various AI services. Prism is a powerful, framework-agnostic PHP library that provides a unified interface for working with different AI providers.
+This package uses the official [Laravel AI](https://github.com/laravel/ai) package under the hood to interact with various AI services. It provides a unified interface for working with different AI providers.
 
-By default, the package is configured to use OpenAI's GPT-4 models. To get started, you'll need to add your OpenAI API key to your `.env` file:
+By default, the package is configured to use OpenAI. To get started, you'll need to add your OpenAI API key to your `.env` file:
 
 ```bash
 OPENAI_API_KEY=your-api-key-here
@@ -91,14 +85,12 @@ OPENAI_API_KEY=your-api-key-here
 
 ### Using different AI providers
 
-Prism supports multiple AI providers including OpenAI, Anthropic Claude, Google Gemini, and more. You can easily switch providers by updating the config file:
+Laravel AI supports multiple providers including OpenAI, Anthropic Claude, Google Gemini, and more. Providers are represented by the `Laravel\Ai\Enums\Lab` enum. You can switch providers by updating the config file:
 
 ```php
 'ai' => [
-    'default' => [
-        'provider' => Prism\Prism\Enums\Provider::Anthropic,
-        'model' => 'claude-3-5-sonnet-20241022',
-    ],
+    'provider' => Laravel\Ai\Enums\Lab::Anthropic,
+    'model' => 'claude-haiku-4-5-20251001',
 ],
 ```
 
@@ -112,5 +104,4 @@ ANTHROPIC_API_KEY=your-api-key-here
 GEMINI_API_KEY=your-api-key-here
 ```
 
-For more information about configuring Prism and the available providers, check out the [Prism documentation](https://prismphp.com/docs/providers).
-
+For more information about configuring providers, check out the [Laravel AI documentation](https://github.com/laravel/ai).
