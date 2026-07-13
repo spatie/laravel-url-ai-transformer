@@ -60,6 +60,7 @@ A schema closes the field list: the AI can only return the properties you define
 
 ```php
 use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 
 class LdJsonTransformer extends Transformer implements HasStructuredOutput
 {
@@ -77,6 +78,10 @@ class LdJsonTransformer extends Transformer implements HasStructuredOutput
 
     protected function resultFrom(AgentResponse $response): string
     {
+        if (! $response instanceof StructuredAgentResponse) {
+            return $response->text;
+        }
+
         return $response['json'];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 use Stringable;
 
 class LdJsonTransformer extends Transformer implements HasStructuredOutput
@@ -30,6 +31,10 @@ class LdJsonTransformer extends Transformer implements HasStructuredOutput
 
     protected function resultFrom(AgentResponse $response): string
     {
+        if (! $response instanceof StructuredAgentResponse) {
+            return $response->text;
+        }
+
         return $response['json'];
     }
 }
