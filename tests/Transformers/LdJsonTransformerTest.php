@@ -7,7 +7,7 @@ use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
 
 it('can transform content to ld+json', function () {
     LdJsonTransformer::fake([
-        '{"@context": "https://schema.org", "@type": "WebPage", "name": "Hello World"}',
+        ['json' => '{"@context": "https://schema.org", "@type": "WebPage", "name": "Hello World"}'],
     ]);
 
     $transformer = new LdJsonTransformer;

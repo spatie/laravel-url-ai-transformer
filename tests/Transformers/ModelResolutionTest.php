@@ -10,7 +10,7 @@ use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\PinnedModelTra
 use Spatie\LaravelUrlAiTransformer\Transformers\LdJsonTransformer;
 
 it('resolves the smartest model by default', function () {
-    LdJsonTransformer::fake(['result']);
+    LdJsonTransformer::fake([['json' => 'result']]);
 
     (new LdJsonTransformer)
         ->setTransformationProperties('https://example.com', 'content', new TransformationResult)
@@ -22,7 +22,7 @@ it('resolves the smartest model by default', function () {
 it('uses a plain string model from config', function () {
     config()->set('url-ai-transformer.ai.model', 'gpt-4o-mini');
 
-    LdJsonTransformer::fake(['result']);
+    LdJsonTransformer::fake([['json' => 'result']]);
 
     (new LdJsonTransformer)
         ->setTransformationProperties('https://example.com', 'content', new TransformationResult)
@@ -34,7 +34,7 @@ it('uses a plain string model from config', function () {
 it('resolves a Model enum from config against the configured provider', function () {
     config()->set('url-ai-transformer.ai.model', Model::Cheapest);
 
-    LdJsonTransformer::fake(['result']);
+    LdJsonTransformer::fake([['json' => 'result']]);
 
     (new LdJsonTransformer)
         ->setTransformationProperties('https://example.com', 'content', new TransformationResult)

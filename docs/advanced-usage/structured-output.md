@@ -54,6 +54,36 @@ $result = TransformationResult::forUrl('https://example.com/product', 'product')
 $product = json_decode($result, true);
 ```
 
+## Forcing valid JSON while keeping the structure flexible
+
+A schema closes the field list: the AI can only return the properties you define. When you want guaranteed valid JSON but the shape of the data should stay open, wrap the free-form part in a single string property:
+
+```php
+use Laravel\Ai\Responses\AgentResponse;
+
+class LdJsonTransformer extends Transformer implements HasStructuredOutput
+{
+    public function instructions(): Stringable|string
+    {
+        return 'Summarize this webpage to ld+json. Put the ld+json in the `json` key.';
+    }
+
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'json' => $schema->string()->required(),
+        ];
+    }
+
+    protected function resultFrom(AgentResponse $response): string
+    {
+        return $response['json'];
+    }
+}
+```
+
+The provider is forced to return valid JSON, while the ld+json inside the `json` key can take any shape that fits the content. The built-in `LdJsonTransformer` uses this technique.
+
 ## Testing structured transformers
 
 Fake the transformer with an array to stand in for the structured response:
