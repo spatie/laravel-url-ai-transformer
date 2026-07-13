@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 2.0.0 - 2026-07-13
+
+Replaces Prism with the official Laravel AI package. Requires Laravel 12+. See the upgrade guide for the migration path.
+
 ## 1.3.1 - 2026-06-03
 
 ### What's Changed
