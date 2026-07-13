@@ -16,12 +16,7 @@ class LdJsonTransformer extends Transformer implements HasStructuredOutput
         return 'Summarize the following webpage to ld+json. Use the schema.org types and properties that fit the content best, and make the snippet as complete as possible. Put the ld+json in the `json` key.';
     }
 
-    /**
-     * The schema guarantees the response is valid JSON, while the ld+json
-     * inside the `json` key can take any shape that fits the content.
-     *
-     * @return array<string, Type>
-     */
+    /** @return array<string, Type> */
     public function schema(JsonSchema $schema): array
     {
         return [
@@ -31,10 +26,13 @@ class LdJsonTransformer extends Transformer implements HasStructuredOutput
 
     protected function resultFrom(AgentResponse $response): string
     {
-        if (! $response instanceof StructuredAgentResponse) {
-            return $response->text;
-        }
+        $json = $response instanceof StructuredAgentResponse
+            ? $response['json']
+            : $response->text;
 
-        return $response['json'];
+        // The schema validates the outer response; this validates its flexible JSON payload.
+        json_decode($json, flags: JSON_THROW_ON_ERROR);
+
+        return $json;
     }
 }

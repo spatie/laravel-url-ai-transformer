@@ -27,11 +27,21 @@ Now, you can transform the URLs by running:
 php artisan transform-urls
 ```
 
-This command will dispatch a queued job for each combination of URL and transformer. Inside that queued job:
+The command fetches each URL once and then dispatches a queued job for every transformer registered for that URL. Each queued job prepares the fetched content, sends it to the configured AI, and stores the response in the `transformation_results` table.
 
-- the content of the URL will be fetched.
-- the content will be sent to the configured AI.
-- the response from the AI will be stored in the `transformation_results` table.
+Start a queue worker to process those jobs:
+
+```bash
+php artisan queue:work
+```
+
+URL fetching happens synchronously while `transform-urls` is running. The AI transformations run on the queue, so retry, backoff, and queue middleware settings apply to the transformation itself.
+
+During local development, or whenever you intentionally want to wait for all transformations, use `--now` to run every transformation job synchronously:
+
+```bash
+php artisan transform-urls --now
+```
 
 ## What's in the database?
 
@@ -84,4 +94,3 @@ use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('transform-urls')->dailyAt('02:00');
 ```
-

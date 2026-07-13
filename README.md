@@ -2,7 +2,7 @@
     <a href="https://spatie.be/open-source?utm_source=github&utm_medium=banner&utm_campaign=laravel-url-ai-transformer">
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="https://spatie.be/packages/header/laravel-url-ai-transformer/html/dark.webp?1756452689">
-        <img alt="Logo for laravel-permission" src="https://spatie.be/packages/header/laravel-url-ai-transformer/html/light.webp?1756452689">
+        <img alt="Logo for laravel-url-ai-transformer" src="https://spatie.be/packages/header/laravel-url-ai-transformer/html/light.webp?1756452689">
       </picture>
     </a>
 
@@ -16,6 +16,8 @@
 </div>
 
 Using this package, you can transform URLs and their content using AI. Whether you want to extract structured data, generate summaries, or apply custom AI transformations to web content, this package can do it.
+
+Upgrading from v1? Read [UPGRADE.md](UPGRADE.md) before updating.
 
 The result of the transformation is stored in a database. You can retrieve the transformed content at any time.
 

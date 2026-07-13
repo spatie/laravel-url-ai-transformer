@@ -18,7 +18,7 @@ return [
      */
     'ai' => [
         'provider' => Lab::OpenAI,
-        'model' => Model::Smartest,
+        'model' => Model::Cheapest,
     ],
 
     /*

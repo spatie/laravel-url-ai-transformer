@@ -57,11 +57,17 @@ class ProcessRegistrationAction
             return 0;
         }
 
+        $dispatchedJobCount = 0;
+
         foreach ($transformers as $transformer) {
-            $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now);
+            if (! $this->dispatchTransformerJob($transformer, $url, $urlContent, $force, $now)) {
+                continue;
+            }
+
+            $dispatchedJobCount++;
         }
 
-        return $transformers->count();
+        return $dispatchedJobCount;
     }
 
     protected function fetchUrlContent(string $url): string
@@ -78,7 +84,7 @@ class ProcessRegistrationAction
         string $urlContent,
         bool $force,
         bool $now,
-    ): void {
+    ): bool {
         $processTransformationJob = Config::getProcessTransformationJobClass();
 
         $dispatchMethod = $now
@@ -87,8 +93,12 @@ class ProcessRegistrationAction
 
         try {
             $processTransformationJob::$dispatchMethod(get_class($transformer), $url, $urlContent, $force);
+
+            return true;
         } catch (Throwable $exception) {
             report($exception);
+
+            return false;
         }
     }
 

@@ -6,6 +6,7 @@ use Spatie\LaravelUrlAiTransformer\Commands\TransformUrlsCommand;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
 use Spatie\LaravelUrlAiTransformer\Support\Transform;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\DummyLdTransformer;
+use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\FailingTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\SkippableTransformer;
 use Spatie\LaravelUrlAiTransformer\Tests\TestSupport\Transformers\TestTransformer;
 
@@ -222,5 +223,18 @@ it('reports how many transformer jobs were dispatched', function () {
     $this
         ->artisan(TransformUrlsCommand::class)
         ->expectsOutputToContain('Dispatched 2 transformer job(s)')
+        ->assertSuccessful();
+});
+
+it('does not count transformer jobs that fail during synchronous dispatch', function () {
+    Http::fake([
+        'https://example.com' => Http::response('<html><body>Content</body></html>', 200),
+    ]);
+
+    Transform::urls('https://example.com')->usingTransformers(new FailingTransformer);
+
+    $this
+        ->artisan(TransformUrlsCommand::class, ['--now' => true])
+        ->expectsOutputToContain('Ran 0 transformer job(s)')
         ->assertSuccessful();
 });

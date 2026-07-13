@@ -83,7 +83,7 @@ it('throws an exception when AI provider is invalid', function () {
 it('can get the AI model', function () {
     $model = Config::aiModel();
 
-    expect($model)->toBe(Model::Smartest);
+    expect($model)->toBe(Model::Cheapest);
 });
 
 it('can get a custom configured AI model', function () {

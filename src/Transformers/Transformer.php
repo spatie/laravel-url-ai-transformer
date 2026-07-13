@@ -62,13 +62,11 @@ abstract class Transformer implements Agent
     }
 
     /**
-     * A #[Provider] attribute hands provider resolution to Laravel AI.
-     *
      * @param  list<class-string>  $attributes
      */
     protected function resolveProvider(array $attributes): ?Lab
     {
-        if (in_array(ProviderAttribute::class, $attributes, true)) {
+        if (method_exists($this, 'provider') || in_array(ProviderAttribute::class, $attributes, true)) {
             return null;
         }
 
@@ -76,8 +74,6 @@ abstract class Transformer implements Agent
     }
 
     /**
-     * A #[Provider] or model attribute hands model resolution to Laravel AI.
-     *
      * @param  list<class-string>  $attributes
      */
     protected function resolveModel(array $attributes): ?string
@@ -94,6 +90,10 @@ abstract class Transformer implements Agent
      */
     protected function overridesModel(array $attributes): bool
     {
+        if (method_exists($this, 'provider') || method_exists($this, 'model')) {
+            return true;
+        }
+
         return array_intersect([
             ProviderAttribute::class,
             ModelAttribute::class,

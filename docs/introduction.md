@@ -17,7 +17,7 @@ Transform::urls('https://example.com/blog/my-post')
     ->usingTransformers(new LdJsonTransformer);
 ```
 
-A transformer is a class where you can configure the AI transformation, and specify the prompt to use.
+A transformer is a Laravel AI agent where you define the instructions for the transformation and, when needed, customize the content sent to the model.
 
 The configured transformation can be run using the `transform-urls` command.
 

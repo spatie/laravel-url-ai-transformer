@@ -40,9 +40,9 @@ class ProcessTransformerJob implements ShouldQueue
 
             $transformationResult->recordException($exception);
 
-            report($exception);
-
             event(new TransformerFailed($transformer, $transformationResult, $exception));
+
+            throw $exception;
         }
     }
 

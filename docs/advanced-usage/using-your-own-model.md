@@ -9,23 +9,24 @@ You can replace the `TransformationResult` model with your own to add scopes, me
 // app/Models/TransformationResult.php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\LaravelUrlAiTransformer\Models\TransformationResult as BaseTransformationResult;
 
 class TransformationResult extends BaseTransformationResult
 {
-    public function scopeSuccessful($query)
+    public function scopeSuccessful(Builder $query): Builder
     {
         return $query->whereNotNull('successfully_completed_at');
     }
 
-    public function scopeFailed($query)
+    public function scopeFailed(Builder $query): Builder
     {
         return $query->whereNotNull('latest_exception_seen_at');
     }
 
     public function isStale(): bool
     {
-        return $this->successfully_completed_at < now()->subDays(7);
+        return $this->successfully_completed_at?->isBefore(now()->subDays(7)) ?? true;
     }
 }
 ```

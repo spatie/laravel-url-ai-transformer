@@ -9,6 +9,8 @@ You can install the package via composer:
 composer require spatie/laravel-url-ai-transformer
 ```
 
+Upgrading from v1? Follow the [upgrade guide](https://github.com/spatie/laravel-url-ai-transformer/blob/main/UPGRADE.md) before updating the package.
+
 ## Publishing the config file
 
 Optionally, you can publish the config file with this command:
@@ -30,7 +32,7 @@ return [
      */
     'ai' => [
         'provider' => Laravel\Ai\Enums\Lab::OpenAI,
-        'model' => Spatie\LaravelUrlAiTransformer\Enums\Model::Smartest,
+        'model' => Spatie\LaravelUrlAiTransformer\Enums\Model::Cheapest,
     ],
 
     /*
@@ -103,4 +105,3 @@ GEMINI_API_KEY=your-api-key-here
 ```
 
 For more information about configuring providers, check out the [Laravel AI documentation](https://github.com/laravel/ai).
-

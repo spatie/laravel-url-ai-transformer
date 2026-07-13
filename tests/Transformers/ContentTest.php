@@ -20,13 +20,13 @@ it('sends the url content as the prompt by default', function () {
 it('prepares the url content before sending it to the AI', function () {
     PinnedModelTransformer::fake(['result']);
 
-    $urlContent = '<html><head><script>var ignored = true;</script></head><body><p>Hello</p>   <p>world</p></body></html>';
+    $urlContent = '<html><head><script>var ignored = true;</script><style>p { color: red; }</style></head><body><h1>Hello</h1><p>world &amp; friends</p></body></html>';
 
     (new PinnedModelTransformer)
         ->setTransformationProperties('https://example.com', $urlContent, new TransformationResult)
         ->transform();
 
-    PinnedModelTransformer::assertPrompted(fn ($prompt) => $prompt->prompt === 'Hello world');
+    PinnedModelTransformer::assertPrompted(fn ($prompt) => $prompt->prompt === 'Hello world & friends');
 });
 
 it('can use a custom prepare url content action', function () {

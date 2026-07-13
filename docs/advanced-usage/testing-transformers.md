@@ -9,9 +9,10 @@ Here's a quick example. We use Laravel's `Http` facade to fake the fetched URL, 
 
 ```php
 use App\Transformers\SummaryTransformer;
-use Spatie\LaravelUrlAiTransformer\Support\Transform;
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Support\Transform;
 
 it('generates summaries for articles', function () {
     Http::fake([
@@ -25,7 +26,7 @@ it('generates summaries for articles', function () {
     Transform::urls('https://example.com/article')
         ->usingTransformers(new SummaryTransformer);
 
-    $this->artisan('transform-urls --now');
+    Artisan::call('transform-urls', ['--now' => true]);
 
     $summary = TransformationResult::forUrl(
         'https://example.com/article',
@@ -33,6 +34,6 @@ it('generates summaries for articles', function () {
     );
 
     expect($summary)->not->toBeNull();
-    expect($summary)->toContain('•'); // Bullet points
+    expect($summary)->toContain('•');
 });
 ```

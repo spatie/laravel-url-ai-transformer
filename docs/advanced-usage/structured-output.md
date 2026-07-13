@@ -56,11 +56,15 @@ $product = json_decode($result, true);
 
 ## Forcing valid JSON while keeping the structure flexible
 
-A schema closes the field list: the AI can only return the properties you define. When you want guaranteed valid JSON but the shape of the data should stay open, wrap the free-form part in a single string property:
+A structured schema normally describes each field in advance. When you want guaranteed valid JSON but the shape of the data should stay open, wrap the free-form part in a single string property:
 
 ```php
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\StructuredAgentResponse;
+use Spatie\LaravelUrlAiTransformer\Transformers\Transformer;
+use Stringable;
 
 class LdJsonTransformer extends Transformer implements HasStructuredOutput
 {
@@ -78,16 +82,18 @@ class LdJsonTransformer extends Transformer implements HasStructuredOutput
 
     protected function resultFrom(AgentResponse $response): string
     {
-        if (! $response instanceof StructuredAgentResponse) {
-            return $response->text;
-        }
+        $json = $response instanceof StructuredAgentResponse
+            ? $response['json']
+            : $response->text;
 
-        return $response['json'];
+        json_decode($json, flags: JSON_THROW_ON_ERROR);
+
+        return $json;
     }
 }
 ```
 
-The provider is forced to return valid JSON, while the ld+json inside the `json` key can take any shape that fits the content. The built-in `LdJsonTransformer` uses this technique.
+The schema makes the provider return an outer object with a `json` string. `json_decode()` then validates that string before it is stored. Invalid JSON throws, which marks the transformation as failed and allows the queued job to retry. The built-in `LdJsonTransformer` uses this technique.
 
 ## Testing structured transformers
 
@@ -95,9 +101,10 @@ Fake the transformer with an array to stand in for the structured response:
 
 ```php
 use App\Transformers\ProductTransformer;
-use Spatie\LaravelUrlAiTransformer\Support\Transform;
-use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelUrlAiTransformer\Models\TransformationResult;
+use Spatie\LaravelUrlAiTransformer\Support\Transform;
 
 it('extracts product details', function () {
     Http::fake([
@@ -111,11 +118,14 @@ it('extracts product details', function () {
     Transform::urls('https://example.com/product')
         ->usingTransformers(new ProductTransformer);
 
-    $this->artisan('transform-urls --now');
+    Artisan::call('transform-urls', ['--now' => true]);
 
     $result = TransformationResult::forUrl('https://example.com/product', 'product');
 
-    expect(json_decode($result, true))
-        ->toMatchArray(['name' => 'Wireless keyboard']);
+    expect($result)->not->toBeNull();
+
+    $product = json_decode($result, associative: true, flags: JSON_THROW_ON_ERROR);
+
+    expect($product['name'])->toBe('Wireless keyboard');
 });
 ```
