@@ -25,13 +25,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.4]
+        php: ['8.4', '8.5']
         laravel: [13.*, 12.*]
         stability: [prefer-lowest, prefer-stable]
-
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -61,3 +60,7 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci
+
+      - name: Check code style
+        if: matrix.php == '8.5' && matrix.laravel == '13.*' && matrix.stability == 'prefer-stable'
+        run: vendor/bin/pint --test
