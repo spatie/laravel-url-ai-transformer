@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 2.1.0 - 2026-10-19
+
+### What changed
+
+- Add support for Laravel AI 1.2.3 and later 1.x releases while retaining Laravel AI 0.11 compatibility.
+- Verify plain text, structured JSON, and LD+JSON transformations through Laravel AI’s HTTP gateway.
+- Document migration considerations for applications choosing to upgrade Laravel AI to 1.x.
+- Validate Composer metadata in CI and provide reproducible orb setup.
+
+The test matrix uses PHP 8.4 and 8.5, Laravel 13, Pest 5.3, and PHPUnit 13. These tooling updates were already included in 2.0.1.
+
+Applications may keep their existing Laravel AI 0.11 constraint. Before upgrading Laravel AI to 1.x, review UPGRADE.md, especially if using remembered conversations, custom middleware, MCP, Bedrock, or response usage data.
+
+**Validation:** All PR checks passed. Each local PHP/dependency combination passed 99 tests and 222 assertions.
+
+**Full Changelog**: https://github.com/spatie/laravel-url-ai-transformer/compare/2.0.1...2.1.0
+
 ## 2.0.1 - 2026-10-19
 
 ### Fixes
