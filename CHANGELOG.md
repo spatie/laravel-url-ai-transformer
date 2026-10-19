@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-url-ai-transformer` will be documented in this file.
 
+## 2.0.1 - 2026-10-19
+
+### Fixes
+
+- Strip large inline script and style blocks without exhausting the PCRE backtrack limit, so page text rather than JavaScript reaches the AI.
+- Recognize whitespace before the closing bracket in script and style end tags.
+- Expand regression coverage for large closed/unclosed blocks, mixed-case tags, and similarly named elements.
+
+### Requirements and tooling
+
+- Requires PHP 8.4+ and Laravel 13. Laravel 12 applications can continue using 2.0.0.
+- Update development tooling to Pest 5.3 and PHPUnit 13, with PHP 8.4/8.5 CI coverage for lowest and latest dependencies.
+
+All four test matrix jobs and code-style checks passed on the PR and merged commit.
+
+Thanks @HawkForge for the fix and @hanzala-afzal-dev for the detailed report.
+
+Full changes: https://github.com/spatie/laravel-url-ai-transformer/pull/37
+
 ## 2.0.0 - 2026-07-13
 
 Replaces Prism with the official Laravel AI package. Requires Laravel 12+. See the upgrade guide for the migration path.
