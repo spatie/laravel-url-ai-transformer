@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+temporary_directory=$(mktemp -d)
+trap 'rm -rf "$temporary_directory"' EXIT
+
+packages=()
+for version in 8.4 8.5; do
+    for extension in cli curl mbstring xml sqlite3 intl zip; do
+        package="php${version}-${extension}"
+        if ! dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q 'install ok installed'; then
+            packages+=("$package")
+        fi
+    done
+done
+
+if ((${#packages[@]})); then
+    curl -fsSL https://packages.sury.org/debsuryorg-archive-keyring.deb -o "$temporary_directory/keyring.deb"
+    sudo dpkg -i "$temporary_directory/keyring.deb"
+    echo 'deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ bookworm main' | sudo tee /etc/apt/sources.list.d/php.list >/dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -y "${packages[@]}"
+fi
+
+if ! command -v composer >/dev/null; then
+    curl -fsSL https://getcomposer.org/installer -o "$temporary_directory/composer-setup.php"
+    expected_signature=$(curl -fsSL https://composer.github.io/installer.sig)
+    actual_signature=$(php -r "echo hash_file('sha384', '$temporary_directory/composer-setup.php');")
+    test "$expected_signature" = "$actual_signature"
+    sudo php "$temporary_directory/composer-setup.php" --install-dir=/usr/local/bin --filename=composer
+fi
+
+composer install --prefer-dist --no-interaction

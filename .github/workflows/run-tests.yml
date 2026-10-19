@@ -52,6 +52,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          composer validate --strict
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 

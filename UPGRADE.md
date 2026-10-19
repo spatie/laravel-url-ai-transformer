@@ -1,3 +1,19 @@
+# Upgrading Laravel AI from 0.11 to 1.x
+
+This package supports both Laravel AI 0.11 and 1.2.3+. Existing applications may keep their Laravel AI 0.11 constraint; upgrading Laravel AI is optional.
+
+The built-in transformers and the `transformation_results` table need no changes.
+
+Before choosing to upgrade Laravel AI to 1.x, review its [upgrade guide](https://github.com/laravel/ai/blob/v1.2.0/UPGRADE.md#upgrading-to-10-from-011). In particular, if your application uses these features:
+
+- Existing remembered conversations require an application migration for the new message schema. The migration originally published by Laravel AI will not run again.
+- Custom agent middleware now handles individual generation steps rather than the whole agent run.
+- Applications using Laravel MCP must update it to version 1.0 or higher.
+- Bedrock users must explicitly require `aws/aws-sdk-php`; Laravel AI no longer installs it.
+- Custom response handling must account for the renamed token usage properties and the new `TextUsage` class.
+
+Provider defaults have also changed. Pin `url-ai-transformer.ai.model` to a model name if you need to preserve the previous model instead of following `Model::Cheapest` or `Model::Smartest`.
+
 # Upgrading from v1 to v2
 
 Version 2 replaces the direct Prism integration with Laravel AI and makes the default transformers Laravel AI agents.
