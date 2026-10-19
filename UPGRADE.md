@@ -1,11 +1,13 @@
 # Upgrading from v1 to v2
 
-Version 2 replaces the direct Prism integration with Laravel AI, makes the default transformers Laravel AI agents, and requires Laravel 12 or 13.
+Version 2 replaces the direct Prism integration with Laravel AI and makes the default transformers Laravel AI agents.
 
 ## Requirements
 
 - PHP 8.4 or higher
-- Laravel 12 or 13
+- Laravel 13
+
+Laravel 12 is supported by version 2.0.0. Later releases require Laravel 13.
 
 Update the package and its dependencies:
 
