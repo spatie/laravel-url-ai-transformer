@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: ['8.4', '8.5']
+        php: ['8.4', '8.5', '8.6']
         laravel: [13.*]
         stability: [prefer-lowest, prefer-stable]
 
@@ -60,7 +60,7 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --ci
+        run: vendor/bin/pest --ci --display-deprecations
 
       - name: Check code style
         if: matrix.php == '8.5' && matrix.laravel == '13.*' && matrix.stability == 'prefer-stable'
